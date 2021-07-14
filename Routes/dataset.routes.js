@@ -1,5 +1,5 @@
 const express = require('express');
-const datasetControllers = require('../Controllers/dataresource.controllers');
+const datasetControllers = require('../Controllers/dataset.controllers');
 const router = express.Router();
 
 router.post('/search', datasetControllers.search);
