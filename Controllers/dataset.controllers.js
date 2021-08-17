@@ -15,9 +15,9 @@ const search = (req, res) => {
 };
 
 const getById = (req, res) => {
-    const dataset_id = req.params.dataset_id;
+    const datasetId = req.params.datasetId;
     res.json({status:"success", data: {
-        id: dataset_id,
+        id: datasetId,
         name: "ds_1"
     }});
 };

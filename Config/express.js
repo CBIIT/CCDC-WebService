@@ -28,7 +28,7 @@ module.exports = function(app) {
 
   //Routers
   app.use("/service/dataresource", dataresourceRouter);
-  app.use("/service/dataset", datasetRouter)
+  app.use("/service/dataset", datasetRouter);
 
   app.get("*", (req, res) => {
     res.sendFile("Public/index.html", { root: config.root });
@@ -43,4 +43,4 @@ module.exports = function(app) {
     res.status(err.status || 500);
     res.send("Error occurred while handling the request.");
   });
-}
+};

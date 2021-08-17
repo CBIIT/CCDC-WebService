@@ -30,15 +30,15 @@ const getLanding = () => {
             description: "description_5",
         },
     ];
-}
+};
 
 const search = (query) => {
     return [];
-}
+};
 
 const searchById = (id) => {
     return {};
-}
+};
 
 module.exports = {
     getLanding,
