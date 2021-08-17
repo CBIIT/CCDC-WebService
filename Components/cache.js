@@ -2,7 +2,7 @@
  * local cache
  */
 
- 'use strict';
+ "use strict";
 
  const NodeCache = require( "node-cache" );
  const myCache = new NodeCache();

@@ -34,7 +34,7 @@ var config = {
   authSecret: process.env.authSecret || "123456789",
 
   // Used by winston logger
-  log_level: process.env.LOG_LEVEL || 'silly',
+  log_level: process.env.LOG_LEVEL || "silly",
 
   // index name for data resource
   index_dr: "data_resource",
@@ -48,18 +48,18 @@ var config = {
   //mysql connection
   mysql: {
     connectionLimit: 100, 
-    host: process.env.RDB_HOST || 'localhost',
+    host: process.env.RDB_HOST || "localhost",
     port: process.env.RDB_PORT || 3306,
-    user: process.env.RDB_USER || 'root', 
-    password : process.env.RDB_PASSWORD || '123456', 
-    db : 'ccdc'
+    user: process.env.RDB_USER || "root", 
+    password : process.env.RDB_PASSWORD || "123456", 
+    db : "ccdc"
   },
 
   //elasticsearch connection
   elasticsearch: {
-    host: process.env.ES_HOST || '127.0.0.1',
+    host: process.env.ES_HOST || "127.0.0.1",
     port: process.env.ES_PORT || 9200,
-    log: 'error',
+    log: "error",
 		requestTimeout: 30000
   },
 

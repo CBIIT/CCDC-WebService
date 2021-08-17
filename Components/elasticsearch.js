@@ -1,9 +1,9 @@
 /**
  * Client for elasticsearch
  */
-const elasticsearch = require('elasticsearch');
-const logger = require('./logger');
-const config = require('../Config');
+const elasticsearch = require("elasticsearch");
+const logger = require("./logger");
+const config = require("../Config");
 
 var esClient = new elasticsearch.Client({
     host: config.elasticsearch.host + ":" + config.elasticsearch.port,
