@@ -1,6 +1,6 @@
 const config = require("../Config");
-const elasticsearch = require('../Components/elasticsearch');
-const cache = require('../Components/cache');
+const elasticsearch = require("../Components/elasticsearch");
+const cache = require("../Components/cache");
 
 const getLanding = () => {
     return [

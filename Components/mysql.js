@@ -2,10 +2,10 @@
  * client for mysql
  */
 
-'use strict';
-var config = require('../Config')
-var mysql = require('mysql');
-const { promisify } = require('util');
+"use strict";
+var config = require("../Config");
+var mysql = require("mysql");
+const { promisify } = require("util");
 
 var pool = mysql.createPool({
     connectionLimit : config.mysql.connectionLimit, 
