@@ -22,9 +22,9 @@ const search = (req, res) => {
 };
 
 const getById = (req, res) => {
-    const dataresource_id = req.params.dataresource_id;
+    const dataresourceId = req.params.dataresourceId;
     res.json({status:"success", data: {
-        id: dataresource_id,
+        id: dataresourceId,
         name: "dr_1"
     }});
 };

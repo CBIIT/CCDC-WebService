@@ -4,11 +4,11 @@ const cache = require("../Components/cache");
 
 const search = (query) => {
     return [];
-}
+};
 
 const searchById = (id) => {
     return {};
-}
+};
 
 module.exports = {
     search,

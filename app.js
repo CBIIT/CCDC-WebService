@@ -11,8 +11,8 @@ const startServer = async function(){
   // Setup server
 
   try{
-    const elasticsearch_connected = await elasticsearch.testConnection();
-    if(elasticsearch_connected){
+    const elasticsearchConnected = await elasticsearch.testConnection();
+    if(elasticsearchConnected){
       logger.info("Elasticsearch connected!");
     }
     else{
@@ -25,8 +25,8 @@ const startServer = async function(){
   
 
 try{
-  const mysql_connected = await mysql.query("select 1 as c1");
-  if(mysql_connected[0].c1){
+  const mysqlConnected = await mysql.query("select 1 as c1");
+  if(mysqlConnected[0].c1){
     logger.info("Relational DB connected!");
   }
   else{
@@ -39,9 +39,9 @@ catch(error) {
 
   // Start server
   app.listen(config.port, function () {
-    console.log("Server listening on %d, in %s mode", config.port, config.env);
+    logger.info("Server listening on %d, in %s mode", config.port, config.env);
   });
-}
+};
 
 startServer();
 

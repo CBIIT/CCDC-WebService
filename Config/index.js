@@ -1,8 +1,8 @@
 let path = require("path");
-let local_env = require("dotenv")
+let localEnv = require("dotenv");
 let _ = require("lodash");
 
-const cfg = local_env.config();
+const cfg = localEnv.config();
 if (!cfg.error) {
     let tmp = cfg.parsed;
     process.env = {
@@ -34,16 +34,16 @@ var config = {
   authSecret: process.env.authSecret || "123456789",
 
   // Used by winston logger
-  log_level: process.env.LOG_LEVEL || "silly",
+  logLevel: process.env.LOG_LEVEL || "silly",
 
   // index name for data resource
-  index_dr: "data_resource",
+  indexDR: "dataResource",
 
   // index name for dataset
-  index_ds: "dataset",
+  indexDS: "dataset",
 
   //in memory cache ttl
-  item_ttl: 24 * 60 * 60,
+  itemTTL: 24 * 60 * 60,
 
   //mysql connection
   mysql: {

@@ -13,15 +13,14 @@ var esClient = new elasticsearch.Client({
 
 const testConnection = async () => {
     const info = await esClient.ping();
-
     return info;
 };
 
 exports.testConnection = testConnection;
 
-const search = async (index, query) => {
-    const {body} = await esClient.search({
-        index: index,
+const search = async (searchIndex, query) => {
+    const body = await esClient.search({
+        index: searchIndex,
         body: query
     });
 

@@ -22,9 +22,13 @@ var pool = mysql.createPool({
 
 pool.getConnectionAsync = () => new Promise((resolve, reject) => {
     pool.getConnection((error, connection) => {
-        if (error) reject(error);
-        else resolve(connection);
-    })
+        if (error) {
+            reject(error);
+        }
+        else {
+            resolve(connection);
+        }
+    });
 });
 
 pool.query = promisify(pool.query);
