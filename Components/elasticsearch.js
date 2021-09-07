@@ -24,7 +24,7 @@ const search = async (searchIndex, query) => {
         body: query
     });
 
-    return body.hits.hits;
+    return body.hits;
 };
 
 exports.search = search;

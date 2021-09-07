@@ -36,14 +36,17 @@ var config = {
   // Used by winston logger
   logLevel: process.env.LOG_LEVEL || "silly",
 
-  // index name for data resource
-  indexDR: "dataResource",
+  // index alias name for data resource
+  indexDR: "dataresources",
 
-  // index name for dataset
-  indexDS: "dataset",
+  // index alias name for dataset
+  indexDS: "datasets",
 
   //in memory cache ttl
   itemTTL: 24 * 60 * 60,
+
+  //display how many data resources on the landing page
+  drDisplayAmount: 10,
 
   //mysql connection
   mysql: {

@@ -4,8 +4,8 @@ const config = require("../Config");
 const path = require("path");
 const dataresourceService = require("../Services/dataresource.service");
 
-const getLanding = (req, res) => {
-    const participatingResources = dataresourceService.getLanding();
+const getLanding = async (req, res) => {
+    const participatingResources = await dataresourceService.getLanding();
     res.json({status:"success", data: participatingResources});
 };
 

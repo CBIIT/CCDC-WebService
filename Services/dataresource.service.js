@@ -1,35 +1,31 @@
 const config = require("../Config");
 const elasticsearch = require("../Components/elasticsearch");
 const cache = require("../Components/cache");
+const queryGenerator = require("./queryGenerator");
+const cacheKeyGenerator = require("./cacheKeyGenerator");
+const utils = require("../Utils");
 
-const getLanding = () => {
-    return [
-        {
-            id: 1,
-            name: "pr_1",
-            description: "description_1",
-        },
-        {
-            id: 2,
-            name: "pr_2",
-            description: "description_2",
-        },
-        {
-            id: 3,
-            name: "pr_3",
-            description: "description_3",
-        },
-        {
-            id: 4,
-            name: "pr_4",
-            description: "description_4",
-        },
-        {
-            id: 5,
-            name: "pr_5",
-            description: "description_5",
-        },
-    ];
+const getLanding = async () => {
+  let landingKey = cacheKeyGenerator.landingKey();
+  let randomN = cache.getValue(landingKey);
+  if(!randomN){
+    let drKey = cacheKeyGenerator.dataresourcesKey();
+    let dataresourcesAll = cache.getValue(drKey);
+    if(!dataresourcesAll){
+      //querying elasticsearch, save to dataresources cache
+      let query = queryGenerator.getDataresourcesQuery();
+      let drs = await elasticsearch.search(config.indexDR, query);
+      dataresourcesAll = drs.hits.map((dr) => {
+        return dr._source;
+      });
+      cache.setValue(drKey, dataresourcesAll, config.itemTTL);
+    }
+    //pick random n, save to landing cache and return
+    randomN = utils.getRandom(dataresourcesAll, config.drDisplayAmount);
+    cache.setValue(landingKey, randomN, config.itemTTL);
+  }
+
+  return randomN;
 };
 
 const search = (query) => {
