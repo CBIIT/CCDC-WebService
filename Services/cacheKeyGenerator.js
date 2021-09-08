@@ -8,4 +8,8 @@ cacheKeyGenerator.dataresourcesKey = () => {
   return "dr_all";
 };
 
+cacheKeyGenerator.filtersKey = () => {
+  return "ds_filters";
+};
+
 module.exports = cacheKeyGenerator;

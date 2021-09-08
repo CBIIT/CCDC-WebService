@@ -128,13 +128,19 @@ queryGenerator.getSearchQuery = (searchText, filters, options) => {
     for(let k = 0; k < filterKeys.length; k ++){
       let attribute = "";
       switch (filterKeys[k]) {
-        case "Cancer Type":
+        case "Resource":
+          attribute = "data_resource_id";
+          break;
+        case "Project Cancer Studied":
           attribute = "project_cancer_studied";
+          break;
+        case "Case Treatment Administered":
+          attribute = "case_treatment_administered";
           break;
         case "Case Disease Diagnosis":
           attribute = "case_disease_diagnosis";
           break;
-        case "Anatomic Site Studied":
+        case "Project Anatomic Site Studied":
           attribute = "project_anatomic_site_studied";
           break;
         case "Sample Anotomic Site":
@@ -143,8 +149,8 @@ queryGenerator.getSearchQuery = (searchText, filters, options) => {
         case "Sample Assay Method":
           attribute = "sample_assay_method";
           break;
-        case "Sample Analyte Type":
-          attribute = "sample_analyte_type";
+        case "Sample Composition Type":
+          attribute = "sample_composition_type";
           break;
         case "Case Age":
           attribute = "case_age";
@@ -155,22 +161,34 @@ queryGenerator.getSearchQuery = (searchText, filters, options) => {
         case "Case Race":
           attribute = "case_race";
           break;
-        case "Case Sex":
+        case "Case Sex at Birth":
           attribute = "case_sex";
           break;
         default:
           attribute = "";
       }
       if(attribute !== ""){
-        filters[filterKeys[k]].map((item) => {
-          let tmp = {};
-          tmp.nested = {};
-          tmp.nested.path = attribute;
-          tmp.nested.query = {};
-          tmp.nested.query.match = {};
-          tmp.nested.query.match[`${attribute}.n`] = {"query":item};
-          clause.bool.should.push(tmp);
-        });
+        if(attribute == "data_resource_id"){
+          filters["Resource"].map((item) => {
+            let tmp = {};
+            tmp.match = {};
+            tmp.match[attribute] = {"query":item};
+            clause.bool.should.push(tmp);
+          });
+        }
+        else{
+          filters[filterKeys[k]].map((item) => {
+          
+            let tmp = {};
+            tmp.nested = {};
+            tmp.nested.path = attribute;
+            tmp.nested.query = {};
+            tmp.nested.query.match = {};
+            tmp.nested.query.match[`${attribute}.n`] = {"query":item};
+            clause.bool.should.push(tmp);
+          });
+        }
+        
       }
     }
     if(clause.bool.should.length > 0){

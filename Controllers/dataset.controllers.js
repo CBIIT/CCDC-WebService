@@ -23,14 +23,20 @@ const search = async (req, res) => {
 };
 
 const getById = (req, res) => {
-    const datasetId = req.params.datasetId;
-    res.json({status:"success", data: {
-        id: datasetId,
-        name: "ds_1"
-    }});
+  const datasetId = req.params.datasetId;
+  res.json({status:"success", data: {
+      id: datasetId,
+      name: "ds_1"
+  }});
+};
+
+const getFilters = async (req, res) => {
+  let filters = await datasetService.getFilters();
+  res.json({status: "success", data: filters});
 };
 
 module.exports = {
 	search,
-	getById
+	getById,
+  getFilters
 };

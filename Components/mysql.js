@@ -31,7 +31,11 @@ pool.getConnectionAsync = () => new Promise((resolve, reject) => {
     });
 });
 
-pool.query = promisify(pool.query);
+pool.query = promisify(pool.query).bind(pool);
+
+pool.format = (sql, inserts) => {
+  return mysql.format(sql, inserts);
+};
 
 pool.close = () => {
     if(pool){
