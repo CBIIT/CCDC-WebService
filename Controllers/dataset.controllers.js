@@ -37,6 +37,6 @@ const getFilters = async (req, res) => {
 
 module.exports = {
 	search,
+  getFilters,
 	getById,
-  getFilters
 };

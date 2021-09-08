@@ -44,7 +44,7 @@ const getFilters = async () => {
     sql = mysql.format(sql, inserts);
     const result = await mysql.query(sql);
     //group by data
-    let filters = {};
+    filters = {};
     if(result.length > 0){
       result.map((kv) => {
         if(!filters[kv.name]){
