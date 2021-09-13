@@ -48,6 +48,9 @@ var config = {
   //display how many data resources on the landing page
   drDisplayAmount: 10,
 
+  //limit the return count of each of the filters
+  limitFilterCount : 30,
+
   //mysql connection
   mysql: {
     connectionLimit: 100, 

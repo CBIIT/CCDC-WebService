@@ -152,8 +152,8 @@ queryGenerator.getSearchQuery = (searchText, filters, options) => {
         case "Sample Composition Type":
           attribute = "sample_composition_type";
           break;
-        case "Case Age":
-          attribute = "case_age";
+        case "Case Age at Diagnosis":
+          attribute = "case_age_at_diagnosis";
           break;
         case "Case Ethnicity":
           attribute = "case_ethnicity";

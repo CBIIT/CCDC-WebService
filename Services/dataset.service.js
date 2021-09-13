@@ -36,7 +36,7 @@ const getFilters = async () => {
       "Sample Assay Method",
       "Sample Analyte Type",
       "Sample Composition Type",
-      "Case Age",
+      "Case Age at Diagnosis",
       "Case Ethnicity",
       "Case Race",
       "Case Sex at Birth"
@@ -46,11 +46,16 @@ const getFilters = async () => {
     //group by data
     filters = {};
     if(result.length > 0){
+      let cacheCount = {};
       result.map((kv) => {
         if(!filters[kv.name]){
           filters[kv.name] = [];
+          cacheCount[kv.name] = 0;
         }
-        filters[kv.name].push(kv.value);
+        if(cacheCount[kv.name] < config.limitFilterCount){
+          filters[kv.name].push(kv.value);
+          cacheCount[kv.name] ++;
+        }
       });
       //add data resource item
       const dataresourceAll = await dataresourceService.getAll();
