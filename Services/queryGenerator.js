@@ -33,6 +33,7 @@ queryGenerator.getSearchQuery = (searchText, filters, options) => {
     dsl.multi_match.fields = [
       "data_resource_id",
       "dataset_name",
+      "desc",
       "primary_dataset_scope",
       "poc",
       "poc_email",
@@ -212,6 +213,7 @@ queryGenerator.getSearchQuery = (searchText, filters, options) => {
     fields: {
       "data_resource_id": { number_of_fragments: 0 },
       "dataset_name": { number_of_fragments: 0 },
+      "desc": { number_of_fragments: 0 },
       "primary_dataset_scope": { number_of_fragments: 0 },
       "poc": { number_of_fragments: 0 },
       "poc_email": { number_of_fragments: 0 },
