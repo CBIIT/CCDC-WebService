@@ -4,12 +4,13 @@
   "description": "Childhood Cancer Data Catalog",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Wei Yu",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.19.0",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.5",
     "dotenv": "^10.0.0",
@@ -18,5 +19,8 @@
     "mysql": "^2.18.1",
     "node-cache": "^5.1.2",
     "winston": "^3.3.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12"
   }
 }

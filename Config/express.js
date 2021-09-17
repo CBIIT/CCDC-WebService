@@ -3,6 +3,7 @@ const compression = require("compression");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const createError = require("http-errors");
+const bodyParser = require('body-parser');
 const config = require("./index");
 
 const dataresourceRouter = require("../Routes/dataresource.routes");
@@ -13,7 +14,7 @@ module.exports = function(app) {
   app.use(express.urlencoded({ extended: false }));
   app.use(cookieParser());
   app.use(express.static(path.resolve(config.root, "Public")));
-
+  
   app.use(compression());
   
   app.use(function (req, res, next) {
