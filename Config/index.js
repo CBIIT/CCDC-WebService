@@ -12,6 +12,12 @@ if (!cfg.error) {
         LOGDIR: tmp.LOGDIR,
         AUTHSECRET: tmp.AUTHSECRET,
         LOG_LEVEL: tmp.LOG_LEVEL,
+        RDB_HOST: tmp.RDB_HOST,
+        RDB_PORT: tmp.RDB_PORT,
+        RDB_USER: tmp.RDB_USER,
+        RDB_PASSWORD: tmp.RDB_PASSWORD,
+        ES_HOST: tmp.ES_HOST,
+        ES_PORT: tmp.ES_PORT,
     };
 }
 
