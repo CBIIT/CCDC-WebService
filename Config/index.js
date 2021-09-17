@@ -31,7 +31,7 @@ var config = {
   port: process.env.PORT || 3000,
 
   // Server port
-  logDir: process.env.LOGDIR || "/local/content/evssip/logs",
+  logDir: process.env.LOGDIR || "/local/content/ccdc/logs",
 
   // Node environment (dev, test, stage, prod), must select one.
   env: process.env.NODE_ENV || "prod",
