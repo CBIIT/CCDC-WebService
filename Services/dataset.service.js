@@ -69,8 +69,60 @@ const getFilters = async () => {
   return filters;
 };
 
+const getAdvancedFilters = async () => {
+  let advancedFiltersKey = cacheKeyGenerator.advancedFiltersKey();
+  let advancedFilters = cache.getValue(advancedFiltersKey);
+  if(!advancedFilters){
+    //querying elasticsearch, save to dataresources cache
+    let sql = "select lt.term_name as name, lvs.permissible_value as value from lu_terms lt, lu_value_set lvs where lt.id = lvs.term_id and lt.term_name in (?,?,?,?,?,?,?,?,?,?,?,?)";
+
+    let inserts = [
+      "Project Cancer Studied",
+      "Case Disease Diagnosis",
+      "Project Anatomic Site Studied",
+      "Case Treatment Administered",
+      "Sample Anatomic Site",
+      "Sample Assay Method",
+      "Sample Analyte Type",
+      "Sample Composition Type",
+      "Case Age at Diagnosis",
+      "Case Ethnicity",
+      "Case Race",
+      "Case Sex at Birth"
+    ];
+    sql = mysql.format(sql, inserts);
+    const result = await mysql.query(sql);
+    //group by data
+    advancedFilters = {};
+    if(result.length > 0){
+      let cacheCount = {};
+      result.map((kv) => {
+        if(!advancedFilters[kv.name]){
+          advancedFilters[kv.name] = [];
+          cacheCount[kv.name] = 0;
+        }
+        if(cacheCount[kv.name] < config.limitAdvancedFilterCount){
+          advancedFilters[kv.name].push(kv.value);
+          cacheCount[kv.name] ++;
+        }
+      });
+      //add case count
+      advancedFilters["Number of Cases"] = [
+        "0 - 10 Cases",
+        "10 - 100 Cases",
+        "100 - 1000 Cases",
+        "> 1000 Cases",
+      ];
+      cache.setValue(advancedFiltersKey, advancedFilters, config.itemTTL);
+    }
+  }
+
+  return advancedFilters;
+};
+
 module.exports = {
     search,
     searchById,
     getFilters,
+    getAdvancedFilters,
 };

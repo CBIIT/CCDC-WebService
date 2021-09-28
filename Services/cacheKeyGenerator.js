@@ -12,4 +12,8 @@ cacheKeyGenerator.filtersKey = () => {
   return "ds_filters";
 };
 
+cacheKeyGenerator.advancedFiltersKey = () => {
+  return "ds_advanced_filters";
+};
+
 module.exports = cacheKeyGenerator;

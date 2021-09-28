@@ -35,8 +35,14 @@ const getFilters = async (req, res) => {
   res.json({status: "success", data: filters});
 };
 
+const getAdvancedFilters = async (req, res) => {
+  let advancedFilters = await datasetService.getAdvancedFilters();
+  res.json({status: "success", data: advancedFilters});
+};
+
 module.exports = {
 	search,
   getFilters,
 	getById,
+  getAdvancedFilters,
 };

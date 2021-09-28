@@ -57,6 +57,9 @@ var config = {
   //limit the return count of each of the filters
   limitFilterCount : 30,
 
+  //limit the return count of each of the advanced filters
+  limitAdvancedFilterCount: 100,
+
   //mysql connection
   mysql: {
     connectionLimit: 100, 
