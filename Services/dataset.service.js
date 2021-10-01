@@ -16,8 +16,19 @@ const search = async (searchText, filters, options) => {
   return {total: searchResults.total.value, data : datasets};
 };
 
-const searchById = (id) => {
-    return {};
+const searchById = async (id) => {
+  let datasetKey = cacheKeyGenerator.datasetKey(id);
+  let dataset = cache.getValue(datasetKey);
+  if(!dataset){
+    let query = queryGenerator.getDatasetByIdQuery(id);
+    let searchResults = await elasticsearch.search(config.indexDS, query);
+    let datasets = searchResults.hits.map((ds) => {
+      return ds._source;
+    });
+    dataset = datasets[0];
+    cache.setValue(datasetKey, dataset, config.itemTTL);
+  }
+  return dataset;
 };
 
 const getFilters = async () => {

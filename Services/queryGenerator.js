@@ -250,4 +250,21 @@ queryGenerator.getSearchQuery = (searchText, filters, options) => {
   return body;
 };
 
+queryGenerator.getDatasetByIdQuery = (id) => {
+  let dsl = {};
+  dsl.match = {};
+  dsl.match.dataset_id = id;
+
+  let body = {
+    size: 1,
+    from: 0
+  };
+  body.query = dsl;
+  body.sort = [{
+    "dataset_id": "asc"
+  }];
+  
+  return body;
+};
+
 module.exports = queryGenerator;

@@ -7,5 +7,4 @@ router.get("/filters", datasetControllers.getFilters);
 router.get("/advancedFilters", datasetControllers.getAdvancedFilters);
 router.get("/:datasetId", datasetControllers.getById);
 
-
 module.exports = router;
