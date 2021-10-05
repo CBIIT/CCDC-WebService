@@ -28,8 +28,8 @@ module.exports = function(app) {
 	});
 
   //Routers
-  app.use("/service/dataresource", dataresourceRouter);
-  app.use("/service/dataset", datasetRouter);
+  app.use("/service/dataresources", dataresourceRouter);
+  app.use("/service/datasets", datasetRouter);
 
   app.get("*", (req, res) => {
     res.sendFile("Public/index.html", { root: config.root });

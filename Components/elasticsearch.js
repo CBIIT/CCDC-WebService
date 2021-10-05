@@ -6,7 +6,7 @@ const logger = require("./logger");
 const config = require("../Config");
 
 var esClient = new elasticsearch.Client({
-    host: config.elasticsearch.host + ":" + config.elasticsearch.port,
+    host: config.elasticsearch.host,
     log: config.elasticsearch.log,
     requestTimeout: config.elasticsearch.requestTimeout
 });

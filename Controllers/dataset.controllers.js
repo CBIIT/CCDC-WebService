@@ -22,12 +22,10 @@ const search = async (req, res) => {
     res.json({status:"success", data: data});
 };
 
-const getById = (req, res) => {
+const getById = async (req, res) => {
   const datasetId = req.params.datasetId;
-  res.json({status:"success", data: {
-      id: datasetId,
-      name: "ds_1"
-  }});
+  const searchResult = await datasetService.searchById(datasetId);
+  res.json({status:"success", data: searchResult});
 };
 
 const getFilters = async (req, res) => {
@@ -35,8 +33,14 @@ const getFilters = async (req, res) => {
   res.json({status: "success", data: filters});
 };
 
+const getAdvancedFilters = async (req, res) => {
+  let advancedFilters = await datasetService.getAdvancedFilters();
+  res.json({status: "success", data: advancedFilters});
+};
+
 module.exports = {
 	search,
   getFilters,
 	getById,
+  getAdvancedFilters,
 };
