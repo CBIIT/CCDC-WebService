@@ -12,7 +12,6 @@ var pool = mysql.createPool({
     connectTimeout: config.mysql.connectTimeout || (1000 * 60 * 20),
     acquireTimeout: config.mysql.acquireTimeout || (1000 * 60 * 20),
     host     : config.mysql.host,
-    port     : config.mysql.port,
     user     : config.mysql.user,
     password : config.mysql.password,
     database : config.mysql.db,

@@ -13,11 +13,9 @@ if (!cfg.error) {
         AUTHSECRET: tmp.AUTHSECRET,
         LOG_LEVEL: tmp.LOG_LEVEL,
         RDB_HOST: tmp.RDB_HOST,
-        RDB_PORT: tmp.RDB_PORT,
         RDB_USER: tmp.RDB_USER,
         RDB_PASSWORD: tmp.RDB_PASSWORD,
         ES_HOST: tmp.ES_HOST,
-        ES_PORT: tmp.ES_PORT,
     };
 }
 
@@ -64,7 +62,6 @@ var config = {
   mysql: {
     connectionLimit: 100, 
     host: process.env.RDB_HOST || "localhost",
-    port: process.env.RDB_PORT || 3306,
     user: process.env.RDB_USER || "root", 
     password : process.env.RDB_PASSWORD || "123456", 
     db : "ccdc"
@@ -72,8 +69,7 @@ var config = {
 
   //elasticsearch connection
   elasticsearch: {
-    host: process.env.ES_HOST || "127.0.0.1",
-    port: process.env.ES_PORT || 9200,
+    host: process.env.ES_HOST || "127.0.0.1:9200",
     log: "error",
 		requestTimeout: 30000
   },
