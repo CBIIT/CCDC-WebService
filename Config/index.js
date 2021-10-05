@@ -15,6 +15,7 @@ if (!cfg.error) {
         RDB_HOST: tmp.RDB_HOST,
         RDB_USER: tmp.RDB_USER,
         RDB_PASSWORD: tmp.RDB_PASSWORD,
+        RDB_NAME: tmp.RDB_NAME,
         ES_HOST: tmp.ES_HOST,
     };
 }
@@ -64,7 +65,7 @@ var config = {
     host: process.env.RDB_HOST || "localhost",
     user: process.env.RDB_USER || "root", 
     password : process.env.RDB_PASSWORD || "123456", 
-    db : "ccdc"
+    db : process.env.RDB_NAME || "ccdc"
   },
 
   //elasticsearch connection
