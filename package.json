@@ -10,12 +10,13 @@
   "author": "Wei Yu",
   "license": "ISC",
   "dependencies": {
+    "@elastic/elasticsearch": "^7.9.1",
     "body-parser": "^1.19.0",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.5",
     "dotenv": "^10.0.0",
-    "elasticsearch": "^16.7.2",
     "express": "^4.17.1",
+    "lodash": "^4.17.21",
     "mysql": "^2.18.1",
     "node-cache": "^5.1.2",
     "winston": "^3.3.3"
