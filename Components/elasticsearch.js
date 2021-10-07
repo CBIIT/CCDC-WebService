@@ -1,15 +1,14 @@
 /**
  * Client for elasticsearch
  */
-const elasticsearch = require("elasticsearch");
+const { Client } = require("@elastic/elasticsearch");
 const logger = require("./logger");
 const config = require("../Config");
 
-var esClient = new elasticsearch.Client({
-    host: config.elasticsearch.host,
-    log: config.elasticsearch.log,
+const esClient = new Client({
+    node: config.elasticsearch.host,
     requestTimeout: config.elasticsearch.requestTimeout,
-    ssl:{ rejectUnauthorized: false }
+    ssl: { rejectUnauthorized: false }
 });
 
 const testConnection = async () => {
@@ -20,12 +19,11 @@ const testConnection = async () => {
 exports.testConnection = testConnection;
 
 const search = async (searchIndex, query) => {
-    const body = await esClient.search({
+    const result = await esClient.search({
         index: searchIndex,
         body: query
     });
-
-    return body.hits;
+    return result.body.hits;
 };
 
 exports.search = search;

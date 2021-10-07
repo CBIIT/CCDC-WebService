@@ -70,8 +70,7 @@ var config = {
 
   //elasticsearch connection
   elasticsearch: {
-    host: process.env.ES_HOST || "127.0.0.1:9200",
-    log: "error",
+    host: process.env.ES_HOST || "http://127.0.0.1:9200",
 		requestTimeout: 30000
   },
 
