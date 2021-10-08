@@ -1,23 +1,22 @@
 /**
  * Client for elasticsearch
  */
-//const { Client } = require("@elastic/elasticsearch");
-const { Client } = require("@opensearch-project/opensearch");
+const { Client } = require("@elastic/elasticsearch");
+//const { Client } = require("@opensearch-project/opensearch");
 const logger = require("./logger");
 const config = require("../Config");
 
-/*
 const esClient = new Client({
     node: config.elasticsearch.host,
-    requestTimeout: config.elasticsearch.requestTimeout,
-    ssl: { rejectUnauthorized: false }
+    requestTimeout: config.elasticsearch.requestTimeout
 });
-*/
 
+/*
 const esClient = new Client({
   node: config.elasticsearch.host,
   requestTimeout: config.elasticsearch.requestTimeout
 });
+*/
 
 const testConnection = async () => {
     const info = await esClient.ping();
