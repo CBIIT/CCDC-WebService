@@ -59,6 +59,35 @@ var config = {
   //limit the return count of each of the advanced filters
   limitAdvancedFilterCount: 100,
 
+  //filterable data elements
+  filterableFields : [
+    "case_age",
+    "case_age_at_diagnosis",
+    "case_age_at_trial",
+    "case_disease_diagnosis",
+    "case_ethnicity",
+    "case_gender",
+    "case_proband",
+    "case_race",
+    "case_sex",
+    "case_sex_at_birth",
+    "case_treatment_administered",
+    "case_treatment_outcome",
+    "case_tumor_site",
+    "donor_age",
+    "donor_disease_diagnosis",
+    "donor_sex",
+    "project_anatomic_site",
+    "project_cancer_studied",
+    "sample_analyte_type",
+    "sample_anatomic_site",
+    "sample_assay_method",
+    "sample_composition_type",
+    "sample_repository_name",
+    "sample_is_normal",
+    "sample_is_xenograft"
+  ],
+
   //mysql connection
   mysql: {
     connectionLimit: 100, 

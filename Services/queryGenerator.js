@@ -128,52 +128,74 @@ queryGenerator.getSearchQuery = (searchText, filters, options) => {
     clause.bool.should = [];
     for(let k = 0; k < filterKeys.length; k ++){
       let attribute = "";
-      switch (filterKeys[k]) {
-        case "Resource":
-          attribute = "data_resource_id";
-          break;
-        case "Project Cancer Studied":
-          attribute = "project_cancer_studied";
-          break;
-        case "Case Treatment Administered":
-          attribute = "case_treatment_administered";
-          break;
-        case "Case Disease Diagnosis":
-          attribute = "case_disease_diagnosis";
-          break;
-        case "Project Anatomic Site Studied":
-          attribute = "project_anatomic_site_studied";
-          break;
-        case "Sample Anotomic Site":
-          attribute = "sample_anatomic_site";
-          break;
-        case "Sample Assay Method":
-          attribute = "sample_assay_method";
-          break;
-        case "Sample Composition Type":
-          attribute = "sample_composition_type";
-          break;
-        case "Case Age at Diagnosis":
-          attribute = "case_age_at_diagnosis";
-          break;
-        case "Case Ethnicity":
-          attribute = "case_ethnicity";
-          break;
-        case "Case Race":
-          attribute = "case_race";
-          break;
-        case "Case Sex at Birth":
-          attribute = "case_sex";
-          break;
-        default:
-          attribute = "";
+      if (filterKeys[k] === "resource") {
+        attribute = "data_resource_id";
       }
+      else if(filterKeys[k] === "number_of_cases") {
+        attribute = "case_id";
+      }
+      else if(filterKeys[k] === "number_of_samples") {
+        attribute = "sample_id";
+      }
+      else if (config.filterableFields.indexOf(filterKeys[k]) > -1 ) {
+        attribute = filterKeys[k];
+      }
+      else {
+        attribute = "";
+      }
+      
       if(attribute !== ""){
         if(attribute == "data_resource_id"){
-          filters["Resource"].map((item) => {
+          filters["resource"].map((item) => {
             let tmp = {};
             tmp.match = {};
             tmp.match[attribute] = {"query":item};
+            clause.bool.should.push(tmp);
+          });
+        }
+        else if (attribute == "case_id") {
+          filters["number_of_cases"].map((item) => {
+            let tmp = {};
+            tmp.range = {};
+            tmp.range[attribute] = {};
+            if (item === "0 - 10 Cases") {
+              tmp.range[attribute].gte = 0;
+              tmp.range[attribute].lt = 10;
+            }
+            else if (item === "10 - 100 Cases") {
+              tmp.range[attribute].gte = 10;
+              tmp.range[attribute].lt = 100;
+            }
+            else if (item === "100 - 1000 Cases") {
+              tmp.range[attribute].gte = 100;
+              tmp.range[attribute].lt = 1000;
+            }
+            else {
+              tmp.range[attribute].gte = 1000;
+            }
+            clause.bool.should.push(tmp);
+          });
+        }
+        else if (attribute == "sample_id") {
+          filters["number_of_samples"].map((item) => {
+            let tmp = {};
+            tmp.range = {};
+            tmp.range[attribute] = {};
+            if (item === "0 - 10 Samples") {
+              tmp.range[attribute].gte = 0;
+              tmp.range[attribute].lt = 10;
+            }
+            else if (item === "10 - 100 Samples") {
+              tmp.range[attribute].gte = 10;
+              tmp.range[attribute].lt = 100;
+            }
+            else if (item === "100 - 1000 Samples") {
+              tmp.range[attribute].gte = 100;
+              tmp.range[attribute].lt = 1000;
+            }
+            else {
+              tmp.range[attribute].gte = 1000;
+            }
             clause.bool.should.push(tmp);
           });
         }
