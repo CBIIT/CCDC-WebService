@@ -31,6 +31,10 @@ module.exports = function(app) {
   app.use("/service/dataresources", dataresourceRouter);
   app.use("/service/datasets", datasetRouter);
 
+  app.get("/", (req, res) => {
+    res.send("Hi, welcome to CCDC!");
+  });
+
   app.get("*", (req, res) => {
     res.sendFile("Public/index.html", { root: config.root });
   });
