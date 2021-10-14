@@ -4,6 +4,7 @@ const router = express.Router();
 
 router.get("/landing", dataresourceControllers.getLanding);
 router.post("/search", dataresourceControllers.search);
+router.get("/:dataresourceId/datasets", dataresourceControllers.getDatasetsById);
 router.get("/:dataresourceId", dataresourceControllers.getById);
 
 module.exports = router;

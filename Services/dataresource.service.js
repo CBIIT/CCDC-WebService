@@ -37,8 +37,19 @@ const search = (query) => {
     return [];
 };
 
-const searchById = (id) => {
-    return {};
+const searchById = async (id) => {
+  let dataresourceKey = cacheKeyGenerator.dataresourceKey(id);
+  let dataresource = cache.getValue(dataresourceKey);
+  if(!dataresource){
+    let query = queryGenerator.getDataresourceByIdQuery(id);
+    let searchResults = await elasticsearch.search(config.indexDR, query);
+    let dataresources = searchResults.hits.map((ds) => {
+      return ds._source;
+    });
+    dataresource = dataresources[0];
+    cache.setValue(dataresourceKey, dataresource, config.itemTTL);
+  }
+  return dataresource;
 };
 
 module.exports = {

@@ -289,4 +289,38 @@ queryGenerator.getDatasetByIdQuery = (id) => {
   return body;
 };
 
+queryGenerator.getDataresourceByIdQuery = (id) => {
+  let dsl = {};
+  dsl.match = {};
+  dsl.match.data_resource_id = id;
+
+  let body = {
+    size: 1,
+    from: 0
+  };
+  body.query = dsl;
+  body.sort = [{
+    "data_resource_id": "asc"
+  }];
+  
+  return body;
+};
+
+queryGenerator.getDatasetsByDataresourceIdQuery = (dataresourceId) => {
+  let dsl = {};
+  dsl.match = {};
+  dsl.match.data_resource_id = dataresourceId;
+
+  let body = {
+    size: 1000,
+    from: 0
+  };
+  body.query = dsl;
+  body.sort = [{
+    "dataset_id": "asc"
+  }];
+  
+  return body;
+};
+
 module.exports = queryGenerator;
