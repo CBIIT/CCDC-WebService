@@ -8,8 +8,16 @@ cacheKeyGenerator.dataresourcesKey = () => {
   return "dr_all";
 };
 
+cacheKeyGenerator.datasetsCountKey = () => {
+  return "ds_counts";
+};
+
 cacheKeyGenerator.filtersKey = () => {
   return "ds_filters";
+};
+
+cacheKeyGenerator.participatingResourcesFiltersKey = () => {
+  return "dr_filters";
 };
 
 cacheKeyGenerator.advancedFiltersKey = () => {
