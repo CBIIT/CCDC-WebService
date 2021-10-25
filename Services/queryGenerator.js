@@ -272,6 +272,58 @@ queryGenerator.getSearchQuery = (searchText, filters, options) => {
   return body;
 };
 
+queryGenerator.getParticipatingResourcesSearchQuery = (filters, options) => {
+  let query = {};
+  const filterKeys = Object.keys(filters);
+  if(filterKeys.length > 0){
+    query.bool = {};
+    query.bool.must = [];
+    for(let k = 0; k < filterKeys.length; k ++){
+      let attribute = "";
+      if (filterKeys[k] === "data_resource_type") {
+        attribute = "resource_type";
+      }
+      else if(filterKeys[k] === "resource_data_content_type") {
+        attribute = "data_content_type";
+      }
+      else {
+        attribute = "";
+      }
+      
+      if(attribute !== ""){
+        let clause = {};
+        clause.bool = {};
+        clause.bool.should = [];
+        filters[filterKeys[k]].map((item) => {
+          let tmp = {};
+          tmp.match = {};
+          tmp.match[attribute] = item;
+          clause.bool.should.push(tmp);
+        });
+        query.bool.must.push(clause);
+      }
+    }
+    if(query.bool.must.length === 0){
+      query = {};
+      query.match_all = {};
+    }
+  }
+  else{
+    query.match_all = {};
+  }
+
+  let body = {
+    size: options.pageInfo.pageSize,
+    from: (options.pageInfo.page - 1 ) * options.pageInfo.pageSize
+  };
+  body.query = query;
+  body.sort = [];
+  let tmp = {};
+  tmp["datasets_total"] = "desc";
+  body.sort.push(tmp);
+  return body;
+};
+
 queryGenerator.getDatasetByIdQuery = (id) => {
   let dsl = {};
   dsl.match = {};
