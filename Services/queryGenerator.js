@@ -321,7 +321,7 @@ queryGenerator.getParticipatingResourcesSearchQuery = (filters, options) => {
   body.query = query;
   body.sort = [];
   let tmp = {};
-  tmp["datasets_total"] = "desc";
+  tmp["data_resource_id"] = "asc";
   body.sort.push(tmp);
   return body;
 };
