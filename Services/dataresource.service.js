@@ -13,7 +13,7 @@ const getLanding = async () => {
     let dataresourcesAll = await getAll();
     //pick random n, save to landing cache and return
     randomN = utils.getRandom(dataresourcesAll, config.drDisplayAmount);
-    cache.setValue(landingKey, randomN, config.itemTTL);
+    cache.setValue(landingKey, randomN, config.itemTTL/6);
   }
 
   return randomN;
