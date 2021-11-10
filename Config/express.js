@@ -30,6 +30,10 @@ module.exports = function(app) {
   //Routers
   app.use("/service/dataresources", dataresourceRouter);
   app.use("/service/datasets", datasetRouter);
+  app.get("/service/files/submissiontemplate", (req, res) => {
+    res.download("Public/Childhood_Cancer_Data_Catalog_Submission_Template.xlsm");
+  });
+
 
   app.get("/", (req, res) => {
     res.send("Hi, welcome to CCDC!");
