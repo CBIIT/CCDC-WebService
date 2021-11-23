@@ -19,6 +19,7 @@ queryGenerator.getDataresourcesQuery = () => {
 };
 
 queryGenerator.getSearchQuery = (searchText, filters, options) => {
+  const resourceTypes = ["research_data_repository", "program", "catalog", "registry"];
   let query = {};
   query.bool = {};
   query.bool.should = [];
@@ -129,7 +130,7 @@ queryGenerator.getSearchQuery = (searchText, filters, options) => {
     clause.bool.should = [];
     for(let k = 0; k < filterKeys.length; k ++){
       let attribute = "";
-      if (filterKeys[k] === "resource") {
+      if (resourceTypes.indexOf(filterKeys[k]) > -1) {
         attribute = "data_resource_id";
       }
       else if(filterKeys[k] === "number_of_cases") {
@@ -147,7 +148,7 @@ queryGenerator.getSearchQuery = (searchText, filters, options) => {
       
       if(attribute !== ""){
         if(attribute == "data_resource_id"){
-          filters["resource"].map((item) => {
+          filters[filterKeys[k]].map((item) => {
             let tmp = {};
             tmp.match = {};
             tmp.match[attribute] = {"query":item};
