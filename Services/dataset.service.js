@@ -16,6 +16,19 @@ const search = async (searchText, filters, options) => {
   return {total: searchResults.total.value, data : datasets};
 };
 
+const export2CSV = async (searchText, filters, options) => {
+  let query = queryGenerator.getSearchQuery(searchText, filters, options);
+  let searchResults = await elasticsearch.search(config.indexDS, query);
+  let datasets = searchResults.hits.map((ds) => {
+    let tmp = ds._source;
+    if(tmp.case_disease_diagnosis) {
+      tmp.case_disease_diagnosis = tmp.case_disease_diagnosis.map((cdd) => cdd.n);
+    }
+    return ds._source;
+  });
+  return datasets;
+};
+
 const searchById = async (id) => {
   let datasetKey = cacheKeyGenerator.datasetKey(id);
   let dataset = cache.getValue(datasetKey);
@@ -155,6 +168,7 @@ const searchDatasetsByDataresourceId = async (dataresourceId) => {
 
 module.exports = {
     search,
+    export2CSV,
     searchById,
     getFilters,
     getAdvancedFilters,
