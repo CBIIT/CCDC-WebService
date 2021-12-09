@@ -19,10 +19,26 @@ const search = async (searchText, filters, options) => {
 const export2CSV = async (searchText, filters, options) => {
   let query = queryGenerator.getSearchQuery(searchText, filters, options);
   let searchResults = await elasticsearch.search(config.indexDS, query);
+  let dataElements = ["case_disease_diagnosis", "case_age_at_diagnosis",
+   "case_ethnicity", "case_race", "case_sex", "case_tumor_site",
+    "case_treatment_administered", "case_treatment_outcome", "sample_assay_method"];
   let datasets = searchResults.hits.map((ds) => {
     let tmp = ds._source;
-    if(tmp.case_disease_diagnosis) {
-      tmp.case_disease_diagnosis = tmp.case_disease_diagnosis.map((cdd) => cdd.n);
+    dataElements.forEach((de) => {
+      if(tmp[de]) {
+        tmp[de] = tmp[de].map((t) => {
+          return t.n + " (" + t.v + ")";
+        });
+      }
+    });
+    if(tmp.additional) {
+      tmp.additional = tmp.additional.map((t) => {
+        let sets = [];
+        t.attr_set.forEach((as) => {
+          sets.push(as.k);
+        });
+        return t.attr_name + " (" + sets.join() + ")";
+      });
     }
     return ds._source;
   });
@@ -72,12 +88,21 @@ const getFilters = async () => {
     const result = await mysql.query(sql);
     //group by data
     filters = {};
+    let dsAll = await dataresourceService.getAll();
+    let dsDictionary = {};
+    dsAll.forEach((ds) => {
+      dsDictionary[ds.data_resource_id] = ds;
+    });
     if(result.length > 0){
       result.map((kv) => {
         if(!filters[kv.data_element]){
           filters[kv.data_element] = [];
         }
-        filters[kv.data_element].push({name: kv.element_value, count: kv.dataset_count});
+        if(["Research Data Repository","Program", "Catalog", "Registry"].indexOf(kv.data_element) > -1){
+          filters[kv.data_element].push({name: kv.element_value, label: dsDictionary[kv.element_value].resource_name,  count: kv.dataset_count});
+        } else{
+          filters[kv.data_element].push({name: kv.element_value, count: kv.dataset_count});
+        }
       });
       //sort and top n
       for(let k in filters){
