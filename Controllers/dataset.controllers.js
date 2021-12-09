@@ -47,6 +47,10 @@ const export2CSV = async (req, res) => {
       value: 'desc'
     },
     {
+      label: 'Dataset Type',
+      value: 'primary_dataset_scope'
+    },
+    {
       label: 'Point of Contact',
       value: 'poc'
     },
@@ -69,7 +73,43 @@ const export2CSV = async (req, res) => {
     {
       label: "Case Disease Diagnosis",
       value: "case_disease_diagnosis"
-    }
+    },
+    {
+      label: "Case Age at Diagnosis",
+      value: "case_age_at_diagnosis"
+    },
+    {
+      label: "Case Ethnicity",
+      value: "case_ethnicity"
+    },
+    {
+      label: "Case Race",
+      value: "case_race"
+    },
+    {
+      label: "Case Sex",
+      value: "case_sex"
+    },
+    {
+      label: "Case Tumor Site",
+      value: "case_tumor_site"
+    },
+    {
+      label: "Case Treatment Administered",
+      value: "case_treatment_administered"
+    },
+    {
+      label: "Case Treatment Outcome",
+      value: "case_treatment_outcome"
+    },
+    {
+      label: "Sample Assay Method",
+      value: "sample_assay_method"
+    },
+    {
+      label: "Additional Data",
+      value: "additional"
+    },
   ];
   const json2csv = new Parser({ fields });
   const csv = json2csv.parse(searchResult);
