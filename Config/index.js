@@ -47,6 +47,9 @@ var config = {
   // index alias name for dataset
   indexDS: "datasets",
 
+  // index alias name for ccdc documents
+  indexDoc: "documents",
+
   //in memory cache ttl
   itemTTL: 24 * 60 * 60,
 
