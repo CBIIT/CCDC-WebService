@@ -327,6 +327,41 @@ queryGenerator.getParticipatingResourcesSearchQuery = (filters, options) => {
   return body;
 };
 
+queryGenerator.getDocumentSearchQuery = (keyword, options) => {
+  let query = {};
+  if(keyword != ""){
+    query.multi_match = {};
+    query.multi_match.query = keyword;
+    query.multi_match.fields = ["title", "description", "content"];
+  }
+  else{
+    query.match_all = {};
+  }
+
+  let body = {
+    size: options.pageInfo.pageSize,
+    from: (options.pageInfo.page - 1 ) * options.pageInfo.pageSize
+  };
+  body.query = query;
+  /*
+  body.sort = [];
+  let tmp = {};
+  tmp["title"] = "asc";
+  body.sort.push(tmp);
+  */
+  body.highlight = {
+    pre_tags: ["<b>"],
+    post_tags: ["</b>"],
+    fields: {
+      "title": { number_of_fragments: 0 },
+      "description": { number_of_fragments: 0 },
+      "content": { number_of_fragments: 0 },
+      "link": { number_of_fragments: 0 }
+    },
+  };
+  return body;
+};
+
 queryGenerator.getDatasetByIdQuery = (id) => {
   let dsl = {};
   dsl.match = {};
