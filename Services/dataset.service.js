@@ -7,17 +7,17 @@ const cacheKeyGenerator = require("./cacheKeyGenerator");
 const dataresourceService = require("./dataresource.service");
 const utils = require("../Utils");
 
-const search = async (searchText, filters, options) => {
-  let query = queryGenerator.getSearchQuery(searchText, filters, options);
-  let searchResults = await elasticsearch.search(config.indexDS, query);
-  let datasets = searchResults.hits.map((ds) => {
+const search = async (searchText, options) => {
+  let query = queryGenerator.getSearchQueryV2(searchText, options);
+  let searchResults = await elasticsearch.searchWithAggregations(config.indexDS, query);
+  let datasets = searchResults.hits.hits.map((ds) => {
     return {content: ds._source, highlight: ds.highlight};
   });
-  return {total: searchResults.total.value, data : datasets};
+  return {total: searchResults.hits.total.value, data : datasets, aggs: searchResults.aggs.myAgg.buckets};
 };
 
 const export2CSV = async (searchText, filters, options) => {
-  let query = queryGenerator.getSearchQuery(searchText, filters, options);
+  let query = queryGenerator.getSearchQueryV1(searchText, filters, options);
   let searchResults = await elasticsearch.search(config.indexDS, query);
   let dataElements = ["case_disease_diagnosis", "case_age_at_diagnosis",
    "case_ethnicity", "case_race", "case_sex", "case_tumor_site",

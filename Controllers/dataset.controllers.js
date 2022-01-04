@@ -8,19 +8,37 @@ const datasetService = require("../Services/dataset.service");
 const search = async (req, res) => {
     const body = req.body;
     let searchText = body.search_text ? body.search_text.trim() : "";
-    let filters = body.facet_filters ? body.facet_filters : {};
     let pageInfo = body.pageInfo ? body.pageInfo : {page: 1, pageSize: 10};
     let sort = body.sort ? body.sort : {k: "data_resource_id", v: "asc"};
     let options = {};
     options.pageInfo = pageInfo;
     options.sort = sort;
-    const searchResult = await datasetService.search(searchText, filters, options);
-    let data = {};
-    data.pageInfo = options.pageInfo;
-    data.pageInfo.total = searchResult.total;
-    data.sort = sort;
-    data.result = searchResult.data;
-    res.json({status:"success", data: data});
+    let valid = true;
+    if (searchText !== "") {
+      const termArr = searchText.split(" ");
+      termArr.forEach((term) => {
+        valid = valid && term.trim().length > 2;
+      });
+    }
+    if(valid){
+      const searchResult = await datasetService.search(searchText, options);
+      let data = {};
+      data.pageInfo = options.pageInfo;
+      data.pageInfo.total = searchResult.total;
+      data.sort = sort;
+      data.result = searchResult.data;
+      data.aggs = searchResult.aggs;
+      res.json({status:"success", data: data});
+    } else {
+      let data = {};
+      data.pageInfo = options.pageInfo;
+      data.pageInfo.total = 0;
+      data.sort = sort;
+      data.result = [];
+      data.aggs = [];
+      data.massage = "No Result found. Please refine your search."
+      res.json({status:"success", data: data});
+    }
 };
 
 const export2CSV = async (req, res) => {

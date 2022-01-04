@@ -34,3 +34,13 @@ const search = async (searchIndex, query) => {
 };
 
 exports.search = search;
+
+const searchWithAggregations = async (searchIndex, query) => {
+  const result = await esClient.search({
+      index: searchIndex,
+      body: query
+  });
+  return {hits: result.body.hits, aggs: result.body.aggregations};
+};
+
+exports.searchWithAggregations = searchWithAggregations;

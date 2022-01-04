@@ -14,7 +14,7 @@ const getLanding = async (req, res) => {
 const search = async (req, res) => {
     const body = req.body;
     let filters = body.facet_filters ? body.facet_filters : {};
-    let pageInfo = body.pageInfo ? body.pageInfo : {page: 1, pageSize: 15};
+    let pageInfo = body.pageInfo ? body.pageInfo : {page: 1, pageSize: 100};
     let options = {};
     options.pageInfo = pageInfo;
     const searchResult = await dataresourceService.search(filters, options);
@@ -23,6 +23,11 @@ const search = async (req, res) => {
     data.pageInfo.total = searchResult.total;
     data.result = searchResult.data;
     res.json({status:"success", data: data});
+};
+
+const getAll = async (req, res) => {
+  const searchResult = await dataresourceService.getAll();
+  res.json({status:"success", data: searchResult});
 };
 
 const getById = async (req, res) => {
@@ -47,6 +52,7 @@ const getDatasetsById = async (req, res) => {
 module.exports = {
   getLanding,
 	search,
+  getAll,
 	getById,
   getFilters,
   getDatasetsById,

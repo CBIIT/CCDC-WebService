@@ -18,7 +18,178 @@ queryGenerator.getDataresourcesQuery = () => {
   return body;
 };
 
-queryGenerator.getSearchQuery = (searchText, filters, options) => {
+queryGenerator.getSearchQueryV2 = (searchText, options) => {
+  let body = {
+    size: options.pageInfo.pageSize,
+    from: (options.pageInfo.page - 1 ) * options.pageInfo.pageSize
+  };
+  if(searchText != ""){
+    const termArr = searchText.split(" ");
+    let compoundQuery = {};
+    compoundQuery.bool = {};
+    compoundQuery.bool.must = [];
+    termArr.forEach((term) => {
+      let searchTerm = term.trim();
+      if(searchTerm != ""){
+        let clause = {};
+        clause.bool = {};
+        clause.bool.should = [];
+        let dsl = {};
+        dsl.multi_match = {};
+        dsl.multi_match.query = searchTerm;
+        //dsl.multi_match.analyzer = "standard_analyzer";
+        dsl.multi_match.fields = [
+          "data_resource_name",
+          "dataset_name",
+          "desc",
+          "primary_dataset_scope",
+          "poc",
+          "poc_email",
+          "published_in",
+          "program_name",
+          "project_name"
+        ];
+        clause.bool.should.push(dsl);
+        let nestedFields = [
+        "case_age.k",
+          "case_age_at_diagnosis.k",
+          "case_age_at_trial.k",
+          "case_disease_diagnosis.k",
+          "case_disease_diagnosis.s",
+          "case_ethnicity.k",
+          "case_gender.k",
+          "case_proband.k",
+          "case_race.k",
+          "case_sex.k",
+          "case_sex_at_birth.k",
+          "case_treatment_administered.k",
+          "case_treatment_outcome.k",
+          "case_tumor_site.k",
+          "donor_age.k",
+          "donor_disease_diagnosis.k",
+          "donor_sex.k",
+          "project_anatomic_site.k",
+          "project_cancer_studied.k",
+          "sample_analyte_type.k",
+          "sample_anatomic_site.k",
+          "sample_assay_method.k",
+          "sample_composition_type.k",
+          "sample_repository_name.k",
+          "sample_is_normal.k",
+          "sample_is_xenograft.k"
+        ];
+        nestedFields.map((f) => {
+          let idx = f.indexOf('.');
+          let parent = f.substring(0, idx);
+          dsl = {};
+          dsl.nested = {};
+          dsl.nested.path = parent;
+          dsl.nested.query = {};
+          dsl.nested.query.match = {};
+          dsl.nested.query.match[f] = {"query":searchTerm};
+          clause.bool.should.push(dsl);
+        });
+        dsl = {};
+        dsl.nested = {};
+        dsl.nested.path = "projects";
+        dsl.nested.query = {};
+        dsl.nested.query.bool = {};
+        dsl.nested.query.bool.should = [];
+        let m = {};
+        m.match = {
+          "projects.p_k": searchTerm
+        };
+        dsl.nested.query.bool.should.push(m);
+        m = {};
+        m.nested = {};
+        m.nested.path = "projects.p_v";
+        m.nested.query = {};
+        m.nested.query.match = {};
+        m.nested.query.match["projects.p_v.k"] = {"query":searchTerm};
+        dsl.nested.query.bool.should.push(m);
+        clause.bool.should.push(dsl);
+    
+        dsl = {};
+        dsl.nested = {};
+        dsl.nested.path = "additional";
+        dsl.nested.query = {};
+        dsl.nested.query.bool = {};
+        dsl.nested.query.bool.should = [];
+        m = {};
+        m.match = {
+          "additional.attr_name": searchTerm
+        };
+        dsl.nested.query.bool.should.push(m);
+        m = {};
+        m.nested = {};
+        m.nested.path = "additional.attr_set";
+        m.nested.query = {};
+        m.nested.query.match = {};
+        m.nested.query.match["additional.attr_set.k"] = {"query":searchTerm};
+        dsl.nested.query.bool.should.push(m);
+        clause.bool.should.push(dsl);
+        compoundQuery.bool.must.push(clause);
+      }
+    });
+    body.query = compoundQuery;
+  }
+  
+  let agg = {};
+  agg.myAgg = {};
+  agg.myAgg.terms = {};
+  agg.myAgg.terms.field = "data_resource_id";
+  agg.myAgg.terms.size = 1000;
+
+  body.aggs = agg;
+  body.sort = [];
+  let tmp = {};
+  tmp[options.sort.k] = options.sort.v;
+  body.sort.push(tmp);
+  body.highlight = {
+    pre_tags: ["<b>"],
+    post_tags: ["</b>"],
+    fields: {
+      "data_resource_name": { number_of_fragments: 0 },
+      "dataset_name": { number_of_fragments: 0 },
+      "desc": { number_of_fragments: 0 },
+      "primary_dataset_scope": { number_of_fragments: 0 },
+      "poc": { number_of_fragments: 0 },
+      "poc_email": { number_of_fragments: 0 },
+      "published_in": { number_of_fragments: 0 },
+      "program_name": { number_of_fragments: 0 },
+      "project_name": { number_of_fragments: 0 },
+      "case_age.k": { number_of_fragments: 0 },
+      "case_age_at_diagnosis.k": { number_of_fragments: 0 },
+      "case_age_at_trial.k": { number_of_fragments: 0 },
+      "case_disease_diagnosis.k": { number_of_fragments: 0 },
+      "case_disease_diagnosis.s": { number_of_fragments: 0 },
+      "case_ethnicity.k": { number_of_fragments: 0 },
+      "case_gender.k": { number_of_fragments: 0 },
+      "case_proband.k": { number_of_fragments: 0 },
+      "case_race.k": { number_of_fragments: 0 },
+      "case_sex.k": { number_of_fragments: 0 },
+      "case_sex_at_birth.k": { number_of_fragments: 0 },
+      "case_treatment_administered.k": { number_of_fragments: 0 },
+      "case_treatment_outcome.k": { number_of_fragments: 0 },
+      "case_tumor_site.k": { number_of_fragments: 0 },
+      "donor_age.k": { number_of_fragments: 0 },
+      "donor_disease_diagnosis.k": { number_of_fragments: 0 },
+      "donor_sex.k": { number_of_fragments: 0 },
+      "project_anatomic_site.k": { number_of_fragments: 0 },
+      "project_cancer_studied.k": { number_of_fragments: 0 },
+      "sample_analyte_type.k": { number_of_fragments: 0 },
+      "sample_anatomic_site.k": { number_of_fragments: 0 },
+      "sample_assay_method.k": { number_of_fragments: 0 },
+      "sample_composition_type.k": { number_of_fragments: 0 },
+      "sample_repository_name.k": { number_of_fragments: 0 },
+      "sample_is_normal.k": { number_of_fragments: 0 },
+      "sample_is_xenograft.k": { number_of_fragments: 0 }
+    },
+  };
+  return body;
+};
+
+queryGenerator.getSearchQueryV1 = (searchText, filters, options) => {
   const resourceTypes = ["research_data_repository", "program", "catalog", "registry"];
   let query = {};
   query.bool = {};
