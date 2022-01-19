@@ -16,12 +16,12 @@ const search = async (searchText, options) => {
   return {total: searchResults.hits.total.value, data : datasets, aggs: searchResults.aggs.myAgg.buckets};
 };
 
-const export2CSV = async (searchText, filters, options) => {
-  let query = queryGenerator.getSearchQueryV1(searchText, filters, options);
+const export2CSV = async (searchText, options) => {
+  let query = queryGenerator.getSearchQueryV2(searchText, options);
   let searchResults = await elasticsearch.search(config.indexDS, query);
   let dataElements = ["case_disease_diagnosis", "case_age_at_diagnosis",
    "case_ethnicity", "case_race", "case_sex", "case_tumor_site",
-    "case_treatment_administered", "case_treatment_outcome", "sample_assay_method"];
+    "case_treatment_administered", "case_treatment_outcome", "sample_assay_method", "sample_analyte_type"];
   let datasets = searchResults.hits.map((ds) => {
     let tmp = ds._source;
     dataElements.forEach((de) => {
