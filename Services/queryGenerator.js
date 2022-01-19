@@ -23,8 +23,21 @@ queryGenerator.getSearchQueryV2 = (searchText, options) => {
     size: options.pageInfo.pageSize,
     from: (options.pageInfo.page - 1 ) * options.pageInfo.pageSize
   };
-  if(searchText != ""){
-    const termArr = searchText.split(" ");
+
+  const strArr = searchText.trim().split(" ");
+  const result = [];
+  strArr.forEach((term) => {
+    const t = term.trim();
+    if (t.length > 2) {
+      result.push(t);
+    }
+  });
+  const keywords = result.length === 0 ? "" : result.join(" ");
+
+  console.log(keywords);
+
+  if(keywords != ""){
+    const termArr = keywords.split(" ");
     let compoundQuery = {};
     compoundQuery.bool = {};
     compoundQuery.bool.must = [];

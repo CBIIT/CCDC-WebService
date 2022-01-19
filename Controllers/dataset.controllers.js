@@ -13,44 +13,25 @@ const search = async (req, res) => {
     let options = {};
     options.pageInfo = pageInfo;
     options.sort = sort;
-    let valid = true;
-    if (searchText !== "") {
-      const termArr = searchText.split(" ");
-      termArr.forEach((term) => {
-        valid = valid && term.trim().length > 2;
-      });
-    }
-    if(valid){
-      const searchResult = await datasetService.search(searchText, options);
-      let data = {};
-      data.pageInfo = options.pageInfo;
-      data.pageInfo.total = searchResult.total;
-      data.sort = sort;
-      data.result = searchResult.data;
-      data.aggs = searchResult.aggs;
-      res.json({status:"success", data: data});
-    } else {
-      let data = {};
-      data.pageInfo = options.pageInfo;
-      data.pageInfo.total = 0;
-      data.sort = sort;
-      data.result = [];
-      data.aggs = [];
-      data.massage = "No Result found. Please refine your search."
-      res.json({status:"success", data: data});
-    }
+    const searchResult = await datasetService.search(searchText, options);
+    let data = {};
+    data.pageInfo = options.pageInfo;
+    data.pageInfo.total = searchResult.total;
+    data.sort = sort;
+    data.result = searchResult.data;
+    data.aggs = searchResult.aggs;
+    res.json({status:"success", data: data});
 };
 
 const export2CSV = async (req, res) => {
   const body = req.body;
   let searchText = body.search_text ? body.search_text.trim() : "";
-  let filters = body.facet_filters ? body.facet_filters : {};
   let pageInfo = {page: 1, pageSize: 5000};
   let sort = body.sort ? body.sort : {k: "data_resource_id", v: "asc"};
   let options = {};
   options.pageInfo = pageInfo;
   options.sort = sort;
-  const searchResult = await datasetService.export2CSV(searchText, filters, options);
+  const searchResult = await datasetService.export2CSV(searchText, options);
   const fields = [
     {
       label: 'Data Resource Name',
@@ -125,6 +106,10 @@ const export2CSV = async (req, res) => {
       value: "sample_assay_method"
     },
     {
+      label: "Sample Analyte Type",
+      value: "sample_analyte_type"
+    },
+    {
       label: "Additional Data",
       value: "additional"
     },
@@ -138,7 +123,9 @@ const export2CSV = async (req, res) => {
 
 const getById = async (req, res) => {
   const datasetId = req.params.datasetId;
+  console.log(datasetId);
   const searchResult = await datasetService.searchById(datasetId);
+  console.log(searchResult);
   res.json({status:"success", data: searchResult});
 };
 
