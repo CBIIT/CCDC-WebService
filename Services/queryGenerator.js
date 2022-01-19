@@ -33,9 +33,6 @@ queryGenerator.getSearchQueryV2 = (searchText, options) => {
     }
   });
   const keywords = result.length === 0 ? "" : result.join(" ");
-
-  console.log(keywords);
-
   if(keywords != ""){
     const termArr = keywords.split(" ");
     let compoundQuery = {};
