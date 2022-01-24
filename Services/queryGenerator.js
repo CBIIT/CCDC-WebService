@@ -509,27 +509,45 @@ queryGenerator.getParticipatingResourcesSearchQuery = (filters, options) => {
 };
 
 queryGenerator.getDocumentSearchQuery = (keyword, options) => {
-  let query = {};
-  if(keyword != ""){
-    query.multi_match = {};
-    query.multi_match.query = keyword;
-    query.multi_match.fields = ["title", "description", "content"];
-  }
-  else{
-    query.match_all = {};
-  }
-
   let body = {
     size: options.pageInfo.pageSize,
     from: (options.pageInfo.page - 1 ) * options.pageInfo.pageSize
   };
-  body.query = query;
-  /*
-  body.sort = [];
-  let tmp = {};
-  tmp["title"] = "asc";
-  body.sort.push(tmp);
-  */
+  let query = {};
+  const strArr = keyword.trim().split(" ");
+  const result = [];
+  strArr.forEach((term) => {
+    const t = term.trim();
+    if (t.length > 2) {
+      result.push(t);
+    }
+  });
+  const keywords = result.length === 0 ? "" : result.join(" ");
+  if(keywords != ""){
+    const termArr = keywords.split(" ");
+    let compoundQuery = {};
+    compoundQuery.bool = {};
+    compoundQuery.bool.must = [];
+    termArr.forEach((term) => {
+      let searchTerm = term.trim();
+      if(searchTerm != ""){
+        let dsl = {};
+        dsl.multi_match = {};
+        dsl.multi_match.query = searchTerm;
+        //dsl.multi_match.analyzer = "standard_analyzer";
+        dsl.multi_match.fields = [
+          "title", "description", "content"
+        ];
+        compoundQuery.bool.must.push(dsl);
+      }
+    });
+    body.query = compoundQuery;
+  }
+  else {
+    query.match_all = {};
+    body.query = query;
+  }
+
   body.highlight = {
     pre_tags: ["<b>"],
     post_tags: ["</b>"],
