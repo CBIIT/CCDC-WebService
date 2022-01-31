@@ -96,7 +96,7 @@ const getFilters = async () => {
       for(let k in filters){
         const tmp = filters[k];
         tmp.sort((firstEL, secondEL) => {
-          return secondEL.count > firstEL.count ? 1 : -1;
+          return secondEL.name < firstEL.name ? 1 : -1;
         });
         filters[k] = tmp.length > config.limitFilterCount ? tmp.slice(0, config.limitFilterCount) : tmp;
       }

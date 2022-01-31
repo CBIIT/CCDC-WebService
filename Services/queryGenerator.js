@@ -503,7 +503,7 @@ queryGenerator.getParticipatingResourcesSearchQuery = (filters, options) => {
   body.query = query;
   body.sort = [];
   let tmp = {};
-  tmp["data_resource_id"] = "asc";
+  tmp["resource_name"] = "asc";
   body.sort.push(tmp);
   return body;
 };
