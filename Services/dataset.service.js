@@ -40,6 +40,19 @@ const export2CSV = async (searchText, options) => {
         return t.attr_name + " (" + sets.join() + ")";
       });
     }
+    if(tmp.projects) {
+      if (!tmp.additional) {
+        tmp.additional = [];
+      }
+      const ps = tmp.projects.map((p) => {
+        let sets = [];
+        p.p_v.forEach((pv) => {
+          sets.push(pv.k + " (" + pv.v + ")");
+        });
+        return p.p_k + ": " + sets.join();
+      });
+      tmp.additional.push("Projects {" + ps.join() + "}");
+    }
     return ds._source;
   });
   return datasets;

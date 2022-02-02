@@ -1,3 +1,5 @@
+const pjson = require('../package.json');
+
 let utils = {};
 
 utils.getRandom = (arr, n) => {
@@ -12,6 +14,10 @@ utils.getRandom = (arr, n) => {
       taken[x] = --len in taken ? taken[len] : len;
   }
   return result;
+};
+
+utils.getVersion = () => {
+  return pjson.version;
 };
 
 module.exports = utils;
