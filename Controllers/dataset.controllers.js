@@ -123,9 +123,7 @@ const export2CSV = async (req, res) => {
 
 const getById = async (req, res) => {
   const datasetId = req.params.datasetId;
-  console.log(datasetId);
   const searchResult = await datasetService.searchById(datasetId);
-  console.log(searchResult);
   res.json({status:"success", data: searchResult});
 };
 
