@@ -55,6 +55,10 @@ const getAll = async () => {
     dataresourcesAll = drs.hits.map((dr) => {
       return dr._source;
     });
+    dataresourcesAll.sort((firstEL, secondEL) => {
+      //return secondEL.count > firstEL.count ? 1 : -1;
+      return secondEL.data_resource_id.toLowerCase() < firstEL.data_resource_id.toLowerCase() ? 1 : -1;
+    });
     cache.setValue(drKey, dataresourcesAll, config.itemTTL);
   }
   return dataresourcesAll;
