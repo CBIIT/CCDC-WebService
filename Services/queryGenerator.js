@@ -464,10 +464,10 @@ queryGenerator.getParticipatingResourcesSearchQuery = (filters, options) => {
     query.bool.must = [];
     for(let k = 0; k < filterKeys.length; k ++){
       let attribute = "";
-      if (filterKeys[k] === "data_resource_type") {
+      if (filterKeys[k] === "resource_type") {
         attribute = "resource_type";
       }
-      else if(filterKeys[k] === "resource_data_content_type") {
+      else if(filterKeys[k] === "data_content_type") {
         attribute = "data_content_type";
       }
       else {

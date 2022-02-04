@@ -82,8 +82,8 @@ const getFilters = async () => {
     let sql = "select data_element, element_value, dataset_count from aggragation where data_element in (?,?)";
 
     let inserts = [
-      "Data Resource Type",
-      "Resource Data Content Type"
+      "Resource Type",
+      "Data Content Type"
     ];
     sql = mysql.format(sql, inserts);
     const result = await mysql.query(sql);
