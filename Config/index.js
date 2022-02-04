@@ -7,6 +7,7 @@ if (!cfg.error) {
     let tmp = cfg.parsed;
     process.env = {
         ...process.env,
+        SOFTWARE_VERSION: tmp.SOFTWARE_VERSION,
         NODE_ENV: tmp.NODE_ENV,
         PORT: tmp.SERVICE_PORT,
         LOGDIR: tmp.LOGDIR,
@@ -34,6 +35,9 @@ var config = {
 
   // Node environment (dev, test, stage, prod), must select one.
   env: process.env.NODE_ENV || "prod",
+
+  // software version of the front-end and back-end combined
+  softwareVersion: process.env.SOFTWARE_VERSION || "1.0.0",
 
   // authentication private key
   authSecret: process.env.authSecret || "123456789",
