@@ -34,11 +34,11 @@ const export2CSV = async (req, res) => {
   const searchResult = await datasetService.export2CSV(searchText, options);
   const fields = [
     {
-      label: 'Data Resource Name',
+      label: 'Resource',
       value: 'data_resource_id'
     },
     {
-      label: 'Dataset Name',
+      label: 'Dataset',
       value: 'dataset_name'
     },
     {
@@ -46,7 +46,7 @@ const export2CSV = async (req, res) => {
       value: 'desc'
     },
     {
-      label: 'Dataset Type',
+      label: 'Primary Dataset Scope',
       value: 'primary_dataset_scope'
     },
     {
