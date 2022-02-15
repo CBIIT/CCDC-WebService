@@ -25,7 +25,7 @@ const LoggerInstance = winston.createLogger({
     level: config.logLevel,
     format: winston.format.combine(
       winston.format.timestamp({
-        format: "YYYY-MM-DD HH:mm:ss"
+        format: "YYYY-MM-DD HH:mm:ss Z"
       }),
       winston.format.errors({ stack: true }),
       winston.format.splat(),
