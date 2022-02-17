@@ -8,6 +8,7 @@ if (!cfg.error) {
     process.env = {
         ...process.env,
         SOFTWARE_VERSION: tmp.SOFTWARE_VERSION,
+        ORIGIN_DOMAIN: tmp.ORIGIN_DOMAIN,
         NODE_ENV: tmp.NODE_ENV,
         PORT: tmp.SERVICE_PORT,
         LOGDIR: tmp.LOGDIR,
@@ -38,6 +39,9 @@ var config = {
 
   // software version of the front-end and back-end combined
   softwareVersion: process.env.SOFTWARE_VERSION || "1.0.0",
+
+  //allow origin
+  orginDomain: process.env.ORIGIN_DOMAIN || "http://localhost:3001",
 
   // authentication private key
   authSecret: process.env.authSecret || "123456789",
