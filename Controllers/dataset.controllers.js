@@ -10,6 +10,19 @@ const search = async (req, res) => {
     let searchText = body.search_text ? body.search_text.trim() : "";
     let pageInfo = body.pageInfo ? body.pageInfo : {page: 1, pageSize: 10};
     let sort = body.sort ? body.sort : {k: "data_resource_id", v: "asc"};
+    if(sort.k === "primary_dataset_scope") {
+      sort.name = "Primary Dataset Scope";
+      sort.k = "primary_dataset_scope";
+      sort.v = "asc";
+    } else if (sort.k === "dataset_name.raw") {
+      sort.name = "Dataset";
+      sort.k = "dataset_name.raw";
+      sort.v = "asc";
+    } else {
+      sort.name = "Resource";
+      sort.k = "data_resource_id";
+      sort.v = "asc";
+    }
     let options = {};
     options.pageInfo = pageInfo;
     options.sort = sort;

@@ -1,4 +1,5 @@
 const express = require("express");
+const helmet = require("helmet");
 const compression = require("compression");
 const path = require("path");
 const cookieParser = require("cookie-parser");
@@ -12,6 +13,7 @@ const documentRouter = require("../Routes/document.routes");
 const applicationRouter = require("../Routes/application.routes");
 
 module.exports = function(app) {
+  app.use(helmet());
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
   app.use(cookieParser());
@@ -20,9 +22,19 @@ module.exports = function(app) {
   app.use(compression());
   
   app.use(function (req, res, next) {
-		res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Origin", config.orginDomain);
 		res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
 		res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+    const cookie = req.cookies.AWSALB;
+    if (cookie !== undefined) {
+      res.cookie("AWSALB", cookie,  { secure: true, httpOnly: true });
+    }
+
+    const cookieCORS = req.cookies.AWSALBCORS;
+    if (cookieCORS !== undefined) {
+      res.cookie("AWSALBCORS", cookieCORS,  { secure: true, httpOnly: true });
+    }
 
 		if (next) {
 			next();
