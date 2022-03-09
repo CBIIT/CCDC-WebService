@@ -548,6 +548,11 @@ queryGenerator.getDocumentSearchQuery = (keyword, options) => {
     body.query = query;
   }
 
+  body.sort = [];
+  let tmp = {};
+  tmp["title.raw"] = "asc";
+  body.sort.push(tmp);
+
   body.highlight = {
     pre_tags: ["<b>"],
     post_tags: ["</b>"],
