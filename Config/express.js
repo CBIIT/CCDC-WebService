@@ -26,16 +26,6 @@ module.exports = function(app) {
 		res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
 		res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
-    const cookie = req.cookies.AWSALB;
-    if (cookie !== undefined) {
-      res.cookie("AWSALB", cookie,  { secure: true, httpOnly: true });
-    }
-
-    const cookieCORS = req.cookies.AWSALBCORS;
-    if (cookieCORS !== undefined) {
-      res.cookie("AWSALBCORS", cookieCORS,  { secure: true, httpOnly: true });
-    }
-
 		if (next) {
 			next();
 		}
