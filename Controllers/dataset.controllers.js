@@ -13,14 +13,20 @@ const search = async (req, res) => {
     if(sort.k === "primary_dataset_scope") {
       sort.name = "Primary Dataset Scope";
       sort.k = "primary_dataset_scope";
-      sort.v = "asc";
     } else if (sort.k === "dataset_name.raw") {
       sort.name = "Dataset";
       sort.k = "dataset_name.raw";
-      sort.v = "asc";
+    } else if (sort.k === "case_id") {
+      sort.name = "Cases";
+      sort.k = "case_id";
+    } else if (sort.k === "sample_id") {
+      sort.name = "Sample";
+      sort.k = "sample_id";
     } else {
       sort.name = "Resource";
       sort.k = "data_resource_id";
+    }
+    if(!sort.v || ["asc", "desc"].indexOf(sort.v) === -1) {
       sort.v = "asc";
     }
     let options = {};
