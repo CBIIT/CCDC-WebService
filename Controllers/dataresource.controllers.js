@@ -14,14 +14,29 @@ const getLanding = async (req, res) => {
 const search = async (req, res) => {
     const body = req.body;
     let filters = body.facet_filters ? body.facet_filters : {};
-    let pageInfo = body.pageInfo ? body.pageInfo : {page: 1, pageSize: 100};
+    let pageInfo = body.pageInfo ? body.pageInfo : {page: 1, pageSize: 10};
+    if (pageInfo.page !== parseInt(pageInfo.page, 10) || pageInfo.page <= 0) {
+      pageInfo.page = 1;
+    }
+    if (pageInfo.pageSize !== parseInt(pageInfo.pageSize, 10) || pageInfo.pageSize <= 0) {
+      pageInfo.pageSize = 10;
+    }
     let options = {};
     options.pageInfo = pageInfo;
     const searchResult = await dataresourceService.search(filters, options);
     let data = {};
-    data.pageInfo = options.pageInfo;
-    data.pageInfo.total = searchResult.total;
-    data.result = searchResult.data;
+    if (searchResult.total !== 0 && (options.pageInfo.page - 1) * options.pageInfo.pageSize >= searchResult.total) {
+      let lastPage = Math.ceil(searchResult.total / options.pageInfo.pageSize);
+      options.pageInfo.page = lastPage;
+      const searchResultAgain = await dataresourceService.search(filters, options);
+      data.pageInfo = options.pageInfo;
+      data.pageInfo.total = searchResultAgain.total;
+      data.result = searchResultAgain.data;
+    } else {
+      data.pageInfo = options.pageInfo;
+      data.pageInfo.total = searchResult.total;
+      data.result = searchResult.data;
+    }
     res.json({status:"success", data: data});
 };
 

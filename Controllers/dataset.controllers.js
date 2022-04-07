@@ -10,6 +10,12 @@ const search = async (req, res) => {
     let searchText = body.search_text ? body.search_text.trim() : "";
     let pageInfo = body.pageInfo ? body.pageInfo : {page: 1, pageSize: 10};
     let sort = body.sort ? body.sort : {k: "data_resource_id", v: "asc"};
+    if (pageInfo.page !== parseInt(pageInfo.page, 10) || pageInfo.page <= 0) {
+      pageInfo.page = 1;
+    }
+    if (pageInfo.pageSize !== parseInt(pageInfo.pageSize, 10) || pageInfo.pageSize <= 0) {
+      pageInfo.pageSize = 10;
+    }
     if(sort.k === "primary_dataset_scope") {
       sort.name = "Primary Dataset Scope";
       sort.k = "primary_dataset_scope";
@@ -34,11 +40,22 @@ const search = async (req, res) => {
     options.sort = sort;
     const searchResult = await datasetService.search(searchText, options);
     let data = {};
-    data.pageInfo = options.pageInfo;
-    data.pageInfo.total = searchResult.total;
-    data.sort = sort;
-    data.result = searchResult.data;
-    data.aggs = searchResult.aggs;
+    if (searchResult.total !== 0 && (options.pageInfo.page - 1) * options.pageInfo.pageSize >= searchResult.total) {
+      let lastPage = Math.ceil(searchResult.total / options.pageInfo.pageSize);
+      options.pageInfo.page = lastPage;
+      const searchResultAgain = await datasetService.search(searchText, options);
+      data.pageInfo = options.pageInfo;
+      data.pageInfo.total = searchResultAgain.total;
+      data.sort = sort;
+      data.result = searchResultAgain.data;
+      data.aggs = searchResultAgain.aggs;
+    } else {
+      data.pageInfo = options.pageInfo;
+      data.pageInfo.total = searchResult.total;
+      data.sort = sort;
+      data.result = searchResult.data;
+      data.aggs = searchResult.aggs;
+    }
     res.json({status:"success", data: data});
 };
 
