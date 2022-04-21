@@ -37,7 +37,7 @@ module.exports = function(app) {
   app.use("/service/documents", documentRouter);
   app.use("/service/application", applicationRouter);
   app.get("/service/files/submissiontemplate", (req, res) => {
-    res.download("Public/Childhood_Cancer_Data_Catalog_Submission_Template.xlsm");
+    res.download("Public/Childhood_Cancer_Data_Catalog_Submission_Template.xlsx");
   });
   
 
