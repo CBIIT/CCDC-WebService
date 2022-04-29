@@ -26,7 +26,7 @@ const search = async (req, res) => {
       sort.name = "Cases";
       sort.k = "case_id";
     } else if (sort.k === "sample_id") {
-      sort.name = "Sample";
+      sort.name = "Samples";
       sort.k = "sample_id";
     } else {
       sort.name = "Resource";
