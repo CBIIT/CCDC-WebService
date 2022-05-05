@@ -7,13 +7,33 @@ const cacheKeyGenerator = require("./cacheKeyGenerator");
 const dataresourceService = require("./dataresource.service");
 const utils = require("../Utils");
 
-const search = async (searchText, options) => {
-  let query = queryGenerator.getSearchQueryV2(searchText, options);
+const search = async (searchText, filters, options) => {
+  let result = {};
+  let searchableText = utils.getSearchableText(searchText);
+  if (searchableText !== "") {
+    let aggregationKey = cacheKeyGenerator.getAggregationKey(searchableText);
+    let aggregation = cache.getValue(aggregationKey);
+    if(!aggregation){
+      let query = queryGenerator.getSearchAggregationQuery(searchText);
+      let searchResults = await elasticsearch.searchWithAggregations(config.indexDS, query);
+      aggregation = searchResults.aggs.myAgg.buckets;
+      //put in cache for 5 mins
+      cache.setValue(aggregationKey, aggregation, config.itemTTL/288);
+    }
+    const aggs = aggregation.map((agg) => agg.key);
+    result.aggs = aggs.join("|");
+  } else {
+    result.aggs = "all";
+  }
+  
+  let query = queryGenerator.getSearchQueryV2(searchText, filters, options);
   let searchResults = await elasticsearch.searchWithAggregations(config.indexDS, query);
   let datasets = searchResults.hits.hits.map((ds) => {
     return {content: ds._source, highlight: ds.highlight};
   });
-  return {total: searchResults.hits.total.value, data : datasets, aggs: searchResults.aggs.myAgg.buckets};
+  result.total = searchResults.hits.total.value;
+  result.data = datasets;
+  return result;
 };
 
 const export2CSV = async (searchText, options) => {

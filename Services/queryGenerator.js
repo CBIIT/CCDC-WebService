@@ -18,11 +18,15 @@ queryGenerator.getDataresourcesQuery = () => {
   return body;
 };
 
-queryGenerator.getSearchQueryV2 = (searchText, options) => {
+queryGenerator.getSearchAggregationQuery = (searchText) => {
   let body = {
-    size: options.pageInfo.pageSize,
-    from: (options.pageInfo.page - 1 ) * options.pageInfo.pageSize
+    size: 10,
+    from: 0
   };
+
+  let compoundQuery = {};
+  compoundQuery.bool = {};
+  compoundQuery.bool.must = [];
 
   const strArr = searchText.trim().split(" ");
   const result = [];
@@ -35,9 +39,6 @@ queryGenerator.getSearchQueryV2 = (searchText, options) => {
   const keywords = result.length === 0 ? "" : result.join(" ");
   if(keywords != ""){
     const termArr = keywords.split(" ");
-    let compoundQuery = {};
-    compoundQuery.bool = {};
-    compoundQuery.bool.must = [];
     termArr.forEach((term) => {
       let searchTerm = term.trim();
       if(searchTerm != ""){
@@ -142,6 +143,166 @@ queryGenerator.getSearchQueryV2 = (searchText, options) => {
         compoundQuery.bool.must.push(clause);
       }
     });
+  } else {
+    return null;
+  }
+
+  if (compoundQuery.bool.must.length > 0) {
+    body.query = compoundQuery;
+  }
+  
+  let agg = {};
+  agg.myAgg = {};
+  agg.myAgg.terms = {};
+  agg.myAgg.terms.field = "data_resource_id";
+  agg.myAgg.terms.size = 1000;
+
+  body.aggs = agg;
+  return body;
+};
+
+queryGenerator.getSearchQueryV2 = (searchText, filters, options) => {
+  let body = {
+    size: options.pageInfo.pageSize,
+    from: (options.pageInfo.page - 1 ) * options.pageInfo.pageSize
+  };
+
+  let compoundQuery = {};
+  compoundQuery.bool = {};
+  compoundQuery.bool.must = [];
+
+  const strArr = searchText.trim().split(" ");
+  const result = [];
+  strArr.forEach((term) => {
+    const t = term.trim();
+    if (t.length > 2) {
+      result.push(t);
+    }
+  });
+  const keywords = result.length === 0 ? "" : result.join(" ");
+  if(keywords != ""){
+    const termArr = keywords.split(" ");
+    termArr.forEach((term) => {
+      let searchTerm = term.trim();
+      if(searchTerm != ""){
+        let clause = {};
+        clause.bool = {};
+        clause.bool.should = [];
+        let dsl = {};
+        dsl.multi_match = {};
+        dsl.multi_match.query = searchTerm;
+        //dsl.multi_match.analyzer = "standard_analyzer";
+        dsl.multi_match.fields = [
+          "data_resource_name",
+          "dataset_name",
+          "desc",
+          "primary_dataset_scope",
+          "poc",
+          "poc_email",
+          "published_in",
+          "program_name",
+          "project_name"
+        ];
+        clause.bool.should.push(dsl);
+        let nestedFields = [
+        "case_age.k",
+          "case_age_at_diagnosis.k",
+          "case_age_at_trial.k",
+          "case_disease_diagnosis.k",
+          "case_disease_diagnosis.s",
+          "case_ethnicity.k",
+          "case_gender.k",
+          "case_proband.k",
+          "case_race.k",
+          "case_sex.k",
+          "case_sex_at_birth.k",
+          "case_treatment_administered.k",
+          "case_treatment_outcome.k",
+          "case_tumor_site.k",
+          "case_tumor_site.s",
+          "donor_age.k",
+          "donor_disease_diagnosis.k",
+          "donor_sex.k",
+          "project_anatomic_site.k",
+          "project_cancer_studied.k",
+          "sample_analyte_type.k",
+          "sample_anatomic_site.k",
+          "sample_assay_method.k",
+          "sample_composition_type.k",
+          "sample_repository_name.k",
+          "sample_is_normal.k",
+          "sample_is_xenograft.k"
+        ];
+        nestedFields.map((f) => {
+          let idx = f.indexOf('.');
+          let parent = f.substring(0, idx);
+          dsl = {};
+          dsl.nested = {};
+          dsl.nested.path = parent;
+          dsl.nested.query = {};
+          dsl.nested.query.match = {};
+          dsl.nested.query.match[f] = {"query":searchTerm};
+          clause.bool.should.push(dsl);
+        });
+        dsl = {};
+        dsl.nested = {};
+        dsl.nested.path = "projects";
+        dsl.nested.query = {};
+        dsl.nested.query.bool = {};
+        dsl.nested.query.bool.should = [];
+        let m = {};
+        m.match = {
+          "projects.p_k": searchTerm
+        };
+        dsl.nested.query.bool.should.push(m);
+        m = {};
+        m.nested = {};
+        m.nested.path = "projects.p_v";
+        m.nested.query = {};
+        m.nested.query.match = {};
+        m.nested.query.match["projects.p_v.k"] = {"query":searchTerm};
+        dsl.nested.query.bool.should.push(m);
+        clause.bool.should.push(dsl);
+    
+        dsl = {};
+        dsl.nested = {};
+        dsl.nested.path = "additional";
+        dsl.nested.query = {};
+        dsl.nested.query.bool = {};
+        dsl.nested.query.bool.should = [];
+        m = {};
+        m.match = {
+          "additional.attr_name": searchTerm
+        };
+        dsl.nested.query.bool.should.push(m);
+        m = {};
+        m.nested = {};
+        m.nested.path = "additional.attr_set";
+        m.nested.query = {};
+        m.nested.query.match = {};
+        m.nested.query.match["additional.attr_set.k"] = {"query":searchTerm};
+        dsl.nested.query.bool.should.push(m);
+        clause.bool.should.push(dsl);
+        compoundQuery.bool.must.push(clause);
+      }
+    });
+    
+  }
+
+  if (filters.length > 0) {
+    let clause = {};
+    clause.bool = {};
+    clause.bool.should = [];
+    filters.forEach((filter) => {
+      let dsl = {};
+      dsl.term = {};
+      dsl.term.data_resource_id = filter;
+      clause.bool.should.push(dsl);
+    });
+    compoundQuery.bool.must.push(clause);
+  }
+
+  if (compoundQuery.bool.must.length > 0) {
     body.query = compoundQuery;
   }
   

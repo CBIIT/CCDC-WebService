@@ -8,6 +8,7 @@ const datasetService = require("../Services/dataset.service");
 const search = async (req, res) => {
     const body = req.body;
     let searchText = body.search_text ? body.search_text.trim() : "";
+    let filters = body.resources_filter ? body.resources_filter : [];
     let pageInfo = body.pageInfo ? body.pageInfo : {page: 1, pageSize: 10};
     let sort = body.sort ? body.sort : {k: "data_resource_id", v: "asc"};
     if (pageInfo.page !== parseInt(pageInfo.page, 10) || pageInfo.page <= 0) {
@@ -38,12 +39,12 @@ const search = async (req, res) => {
     let options = {};
     options.pageInfo = pageInfo;
     options.sort = sort;
-    const searchResult = await datasetService.search(searchText, options);
+    const searchResult = await datasetService.search(searchText, filters, options);
     let data = {};
     if (searchResult.total !== 0 && (options.pageInfo.page - 1) * options.pageInfo.pageSize >= searchResult.total) {
       let lastPage = Math.ceil(searchResult.total / options.pageInfo.pageSize);
       options.pageInfo.page = lastPage;
-      const searchResultAgain = await datasetService.search(searchText, options);
+      const searchResultAgain = await datasetService.search(searchText, filters, options);
       data.pageInfo = options.pageInfo;
       data.pageInfo.total = searchResultAgain.total;
       data.sort = sort;
