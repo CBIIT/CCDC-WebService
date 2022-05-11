@@ -39,8 +39,9 @@ module.exports = function(app) {
   app.get("/service/files/submissiontemplate", (req, res) => {
     res.download("Public/Childhood_Cancer_Data_Catalog_Submission_Template.xlsx");
   });
-  
-
+  app.get("/service/files/userGuide", (req, res) => {
+    res.download("Public/CCDC User Guide v1.0.0.pdf");
+  });
 
   app.get("/", (req, res) => {
     res.send("Hi, welcome to CCDC!");
