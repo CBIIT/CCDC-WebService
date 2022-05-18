@@ -63,12 +63,32 @@ const search = async (req, res) => {
 const export2CSV = async (req, res) => {
   const body = req.body;
   let searchText = body.search_text ? body.search_text.trim() : "";
+  let filters = body.resources_filter ? body.resources_filter : [];
   let pageInfo = {page: 1, pageSize: 5000};
   let sort = body.sort ? body.sort : {k: "data_resource_id", v: "asc"};
+  if(sort.k === "primary_dataset_scope") {
+    sort.name = "Primary Dataset Scope";
+    sort.k = "primary_dataset_scope";
+  } else if (sort.k === "dataset_name.raw") {
+    sort.name = "Dataset";
+    sort.k = "dataset_name.raw";
+  } else if (sort.k === "case_id") {
+    sort.name = "Cases";
+    sort.k = "case_id";
+  } else if (sort.k === "sample_id") {
+    sort.name = "Samples";
+    sort.k = "sample_id";
+  } else {
+    sort.name = "Resource";
+    sort.k = "data_resource_id";
+  }
+  if(!sort.v || ["asc", "desc"].indexOf(sort.v) === -1) {
+    sort.v = "asc";
+  }
   let options = {};
   options.pageInfo = pageInfo;
   options.sort = sort;
-  const searchResult = await datasetService.export2CSV(searchText, options);
+  const searchResult = await datasetService.export2CSV(searchText, filters, options);
   const fields = [
     {
       label: 'Resource',

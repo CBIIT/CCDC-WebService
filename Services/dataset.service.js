@@ -36,8 +36,8 @@ const search = async (searchText, filters, options) => {
   return result;
 };
 
-const export2CSV = async (searchText, options) => {
-  let query = queryGenerator.getSearchQueryV2(searchText, options);
+const export2CSV = async (searchText, filters, options) => {
+  let query = queryGenerator.getSearchQueryV2(searchText, filters, options);
   let searchResults = await elasticsearch.search(config.indexDS, query);
   let dataElements = ["case_disease_diagnosis", "case_age_at_diagnosis",
    "case_ethnicity", "case_race", "case_sex", "case_tumor_site",
