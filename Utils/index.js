@@ -2,6 +2,18 @@ const pjson = require('../package.json');
 
 let utils = {};
 
+utils.getSearchableText = (searchText) => {
+  const strArr = searchText.trim().split(" ");
+  const result = [];
+  strArr.forEach((term) => {
+    const t = term.trim();
+    if (t.length > 2) {
+      result.push(t);
+    }
+  });
+  return result.length === 0 ? "" : result.join(" ");
+};
+
 utils.getRandom = (arr, n) => {
   let result = new Array(n),
       len = arr.length,

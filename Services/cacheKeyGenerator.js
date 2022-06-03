@@ -36,4 +36,8 @@ cacheKeyGenerator.siteUpdateDateKey = () => {
   return "app_site_update_date";
 };
 
+cacheKeyGenerator.getAggregationKey = (searchableText) => {
+  return `ss_${searchableText}`;
+};
+
 module.exports = cacheKeyGenerator;
