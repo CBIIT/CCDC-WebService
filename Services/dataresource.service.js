@@ -11,6 +11,10 @@ const getLanding = async () => {
   let landingList = cache.getValue(landingKey);
   if(!landingList){
     let dataresourcesAll = await getAll();
+    dataresourcesAll.sort((firstEL, secondEL) => {
+      //return secondEL.count > firstEL.count ? 1 : -1;
+      return secondEL.resource_name.toLowerCase() < firstEL.resource_name.toLowerCase() ? 1 : -1;
+    });
     landingList = dataresourcesAll.map((ds) => {
       return {
         data_resource_id: ds.data_resource_id,
