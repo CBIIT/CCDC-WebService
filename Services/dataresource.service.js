@@ -8,15 +8,23 @@ const utils = require("../Utils");
 
 const getLanding = async () => {
   let landingKey = cacheKeyGenerator.landingKey();
-  let randomN = cache.getValue(landingKey);
-  if(!randomN){
+  let landingList = cache.getValue(landingKey);
+  if(!landingList){
     let dataresourcesAll = await getAll();
-    //pick random n, save to landing cache and return
-    randomN = utils.getRandom(dataresourcesAll, config.drDisplayAmount);
-    cache.setValue(landingKey, randomN, config.itemTTL/6);
+    dataresourcesAll.sort((firstEL, secondEL) => {
+      //return secondEL.count > firstEL.count ? 1 : -1;
+      return secondEL.resource_name.toLowerCase() < firstEL.resource_name.toLowerCase() ? 1 : -1;
+    });
+    landingList = dataresourcesAll.map((ds) => {
+      return {
+        data_resource_id: ds.data_resource_id,
+        resource_name: ds.resource_name,
+        description: ds.description
+      };
+    });
+    cache.setValue(landingKey, landingList, config.itemTTL);
   }
-
-  return randomN;
+  return landingList;
 };
 
 const getResourceTotal = async () => {
