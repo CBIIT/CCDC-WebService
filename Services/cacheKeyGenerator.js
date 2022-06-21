@@ -40,4 +40,8 @@ cacheKeyGenerator.getAggregationKey = (searchableText) => {
   return `ss_${searchableText}`;
 };
 
+cacheKeyGenerator.widgetUpdateKey = () => {
+  return "widget_update";
+};
+
 module.exports = cacheKeyGenerator;
