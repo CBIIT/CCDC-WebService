@@ -32,7 +32,7 @@ const getWidgetUpdate = async () => {
 
     let inserts = [];
     sql = mysql.format(sql, inserts);
-    const result = await mysql.query(sql);
+    result = await mysql.query(sql);
     if(result.length > 0){
       cache.setValue(widgetUpdateKey, result, config.itemTTL);
     }
