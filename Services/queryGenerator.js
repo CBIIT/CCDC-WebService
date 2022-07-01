@@ -244,13 +244,14 @@ queryGenerator.getSearchQueryV2 = (searchText, filters, options) => {
           dsl.nested.query.match[f] = {"query":searchTerm};
           clause.bool.should.push(dsl);
         });
+        let m = {};
+        /*
         dsl = {};
         dsl.nested = {};
         dsl.nested.path = "projects";
         dsl.nested.query = {};
         dsl.nested.query.bool = {};
         dsl.nested.query.bool.should = [];
-        let m = {};
         m.match = {
           "projects.p_k": searchTerm
         };
@@ -263,18 +264,29 @@ queryGenerator.getSearchQueryV2 = (searchText, filters, options) => {
         m.nested.query.match["projects.p_v.k"] = {"query":searchTerm};
         dsl.nested.query.bool.should.push(m);
         clause.bool.should.push(dsl);
+        */
     
         dsl = {};
         dsl.nested = {};
         dsl.nested.path = "additional";
+        dsl.nested.inner_hits = {};
+        dsl.nested.inner_hits.highlight = {
+          pre_tags: ["<b>"],
+          post_tags: ["</b>"],
+          fields: {
+            "additional.attr_set.k": {}
+          }
+        };
         dsl.nested.query = {};
         dsl.nested.query.bool = {};
         dsl.nested.query.bool.should = [];
+        /*
         m = {};
         m.match = {
           "additional.attr_name": searchTerm
         };
         dsl.nested.query.bool.should.push(m);
+        */
         m = {};
         m.nested = {};
         m.nested.path = "additional.attr_set";
