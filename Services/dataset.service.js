@@ -29,6 +29,15 @@ const search = async (searchText, filters, options) => {
   let query = queryGenerator.getSearchQueryV2(searchText, filters, options);
   let searchResults = await elasticsearch.searchWithAggregations(config.indexDS, query);
   let datasets = searchResults.hits.hits.map((ds) => {
+    if(ds.inner_hits && ds.inner_hits.additional.hits.hits.length > 0) {
+      const additionalHits = ds.inner_hits.additional.hits.hits.map((hit) => {
+        return {
+          content: hit._source,
+          highlight: hit.highlight
+        };
+      });
+      return {content: ds._source, highlight: ds.highlight, additionalHits: additionalHits};
+    }
     return {content: ds._source, highlight: ds.highlight};
   });
   result.total = searchResults.hits.total.value;
