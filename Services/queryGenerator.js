@@ -244,13 +244,14 @@ queryGenerator.getSearchQueryV2 = (searchText, filters, options) => {
           dsl.nested.query.match[f] = {"query":searchTerm};
           clause.bool.should.push(dsl);
         });
+        let m = {};
+        /*
         dsl = {};
         dsl.nested = {};
         dsl.nested.path = "projects";
         dsl.nested.query = {};
         dsl.nested.query.bool = {};
         dsl.nested.query.bool.should = [];
-        let m = {};
         m.match = {
           "projects.p_k": searchTerm
         };
@@ -263,6 +264,7 @@ queryGenerator.getSearchQueryV2 = (searchText, filters, options) => {
         m.nested.query.match["projects.p_v.k"] = {"query":searchTerm};
         dsl.nested.query.bool.should.push(m);
         clause.bool.should.push(dsl);
+        */
     
         dsl = {};
         dsl.nested = {};
