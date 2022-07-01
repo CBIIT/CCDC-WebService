@@ -267,14 +267,24 @@ queryGenerator.getSearchQueryV2 = (searchText, filters, options) => {
         dsl = {};
         dsl.nested = {};
         dsl.nested.path = "additional";
+        dsl.nested.inner_hits = {};
+        dsl.nested.inner_hits.highlight = {
+          pre_tags: ["<b>"],
+          post_tags: ["</b>"],
+          fields: {
+            "additional.attr_set.k": {}
+          }
+        };
         dsl.nested.query = {};
         dsl.nested.query.bool = {};
         dsl.nested.query.bool.should = [];
+        /*
         m = {};
         m.match = {
           "additional.attr_name": searchTerm
         };
         dsl.nested.query.bool.should.push(m);
+        */
         m = {};
         m.nested = {};
         m.nested.path = "additional.attr_set";
