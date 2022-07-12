@@ -245,7 +245,6 @@ queryGenerator.getSearchQueryV2 = (searchText, filters, options) => {
           clause.bool.should.push(dsl);
         });
         let m = {};
-        /*
         dsl = {};
         dsl.nested = {};
         dsl.nested.path = "projects";
@@ -256,6 +255,7 @@ queryGenerator.getSearchQueryV2 = (searchText, filters, options) => {
           "projects.p_k": searchTerm
         };
         dsl.nested.query.bool.should.push(m);
+        /*
         m = {};
         m.nested = {};
         m.nested.path = "projects.p_v";
@@ -263,8 +263,8 @@ queryGenerator.getSearchQueryV2 = (searchText, filters, options) => {
         m.nested.query.match = {};
         m.nested.query.match["projects.p_v.k"] = {"query":searchTerm};
         dsl.nested.query.bool.should.push(m);
-        clause.bool.should.push(dsl);
         */
+        clause.bool.should.push(dsl);
     
         dsl = {};
         dsl.nested = {};
@@ -368,7 +368,8 @@ queryGenerator.getSearchQueryV2 = (searchText, filters, options) => {
       "sample_composition_type.k": { number_of_fragments: 0 },
       "sample_repository_name.k": { number_of_fragments: 0 },
       "sample_is_normal.k": { number_of_fragments: 0 },
-      "sample_is_xenograft.k": { number_of_fragments: 0 }
+      "sample_is_xenograft.k": { number_of_fragments: 0 },
+      "projects.p_k": { number_of_fragments: 0 }
     },
   };
   return body;
