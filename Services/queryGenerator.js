@@ -181,8 +181,11 @@ queryGenerator.getSearchQueryV2 = (searchText, filters, options) => {
   });
   const keywords = result.length === 0 ? "" : result.join(" ");
   if(keywords != ""){
-    const termArr = keywords.split(" ");
-    termArr.forEach((term) => {
+    const termArr = keywords.split(" ").map((t) => t.trim());
+    const uniqueTermArr = termArr.filter((t, idx) => {
+      return termArr.indexOf(t) === idx;
+    });
+    uniqueTermArr.forEach((term) => {
       let searchTerm = term.trim();
       if(searchTerm != ""){
         let clause = {};
@@ -270,6 +273,7 @@ queryGenerator.getSearchQueryV2 = (searchText, filters, options) => {
         dsl.nested = {};
         dsl.nested.path = "additional";
         dsl.nested.inner_hits = {};
+        dsl.nested.inner_hits.name = searchTerm;
         dsl.nested.inner_hits.highlight = {
           pre_tags: ["<b>"],
           post_tags: ["</b>"],
