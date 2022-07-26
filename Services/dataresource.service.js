@@ -87,7 +87,7 @@ const getFilters = async () => {
   if(!filters){
     //querying elasticsearch, save to dataresources cache
     //let sql = "select lt.term_name as name, lvs.permissible_value as value from lu_terms lt, lu_value_set lvs where lt.id = lvs.term_id and lt.term_name in (?,?,?,?,?,?,?,?,?,?,?,?)";
-    let sql = "select data_element, element_value, dataset_count from aggragation where data_element in (?,?)";
+    let sql = "select data_element, element_value, dataset_count from aggragation where data_element in (?,?) and dataset_count > 0";
 
     let inserts = [
       "Resource Type",
