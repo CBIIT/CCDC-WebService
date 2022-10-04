@@ -24,6 +24,36 @@ const getSiteDataUpdate = async () => {
   return date;
 };
 
+const getWidgetUpdate = async () => {
+  let widgetUpdateKey = cacheKeyGenerator.widgetUpdateKey();
+  let result = cache.getValue(widgetUpdateKey);
+  if(!result) {
+    let sql = "select id, log_type, title, post_date, description from changelog order by post_date desc limit 3";
+
+    let inserts = [];
+    sql = mysql.format(sql, inserts);
+    result = await mysql.query(sql);
+    if(result.length > 0){
+      cache.setValue(widgetUpdateKey, result, config.itemTTL);
+    }
+  }
+  return result;
+};
+
+const getSiteUpdate = async (pageInfo) => {
+    let sql = "select id, post_date, title, description as highlight, details as description from changelog where log_type = 1 order by post_date desc limit ?, ?";
+
+    let inserts = [
+      ( pageInfo.page - 1 ) * pageInfo.pageSize,
+      pageInfo.pageSize
+    ];
+    sql = mysql.format(sql, inserts);
+    const result = await mysql.query(sql);
+    return result;
+};
+
 module.exports = {
   getSiteDataUpdate,
+  getWidgetUpdate,
+  getSiteUpdate,
 };

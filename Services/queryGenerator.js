@@ -181,8 +181,11 @@ queryGenerator.getSearchQueryV2 = (searchText, filters, options) => {
   });
   const keywords = result.length === 0 ? "" : result.join(" ");
   if(keywords != ""){
-    const termArr = keywords.split(" ");
-    termArr.forEach((term) => {
+    const termArr = keywords.split(" ").map((t) => t.trim());
+    const uniqueTermArr = termArr.filter((t, idx) => {
+      return termArr.indexOf(t) === idx;
+    });
+    uniqueTermArr.forEach((term) => {
       let searchTerm = term.trim();
       if(searchTerm != ""){
         let clause = {};
@@ -244,17 +247,18 @@ queryGenerator.getSearchQueryV2 = (searchText, filters, options) => {
           dsl.nested.query.match[f] = {"query":searchTerm};
           clause.bool.should.push(dsl);
         });
+        let m = {};
         dsl = {};
         dsl.nested = {};
         dsl.nested.path = "projects";
         dsl.nested.query = {};
         dsl.nested.query.bool = {};
         dsl.nested.query.bool.should = [];
-        let m = {};
         m.match = {
           "projects.p_k": searchTerm
         };
         dsl.nested.query.bool.should.push(m);
+        /*
         m = {};
         m.nested = {};
         m.nested.path = "projects.p_v";
@@ -262,19 +266,31 @@ queryGenerator.getSearchQueryV2 = (searchText, filters, options) => {
         m.nested.query.match = {};
         m.nested.query.match["projects.p_v.k"] = {"query":searchTerm};
         dsl.nested.query.bool.should.push(m);
+        */
         clause.bool.should.push(dsl);
     
         dsl = {};
         dsl.nested = {};
         dsl.nested.path = "additional";
+        dsl.nested.inner_hits = {};
+        dsl.nested.inner_hits.name = searchTerm;
+        dsl.nested.inner_hits.highlight = {
+          pre_tags: ["<b>"],
+          post_tags: ["</b>"],
+          fields: {
+            "additional.attr_set.k": {}
+          }
+        };
         dsl.nested.query = {};
         dsl.nested.query.bool = {};
         dsl.nested.query.bool.should = [];
+        /*
         m = {};
         m.match = {
           "additional.attr_name": searchTerm
         };
         dsl.nested.query.bool.should.push(m);
+        */
         m = {};
         m.nested = {};
         m.nested.path = "additional.attr_set";
@@ -356,7 +372,8 @@ queryGenerator.getSearchQueryV2 = (searchText, filters, options) => {
       "sample_composition_type.k": { number_of_fragments: 0 },
       "sample_repository_name.k": { number_of_fragments: 0 },
       "sample_is_normal.k": { number_of_fragments: 0 },
-      "sample_is_xenograft.k": { number_of_fragments: 0 }
+      "sample_is_xenograft.k": { number_of_fragments: 0 },
+      "projects.p_k": { number_of_fragments: 0 }
     },
   };
   return body;

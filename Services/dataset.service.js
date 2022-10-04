@@ -29,6 +29,31 @@ const search = async (searchText, filters, options) => {
   let query = queryGenerator.getSearchQueryV2(searchText, filters, options);
   let searchResults = await elasticsearch.searchWithAggregations(config.indexDS, query);
   let datasets = searchResults.hits.hits.map((ds) => {
+    if(ds.inner_hits) {
+      const terms = Object.keys(ds.inner_hits);
+      const additionalHitsDict = {};
+      if (terms.length > 0) {
+        terms.forEach((t) => {
+          ds.inner_hits[t].hits.hits.forEach((hit) => {
+            if (!additionalHitsDict[hit._nested.offset]) {
+              additionalHitsDict[hit._nested.offset] = {};
+              additionalHitsDict[hit._nested.offset].source = hit._source;
+              additionalHitsDict[hit._nested.offset].highlight = [];
+            }
+            additionalHitsDict[hit._nested.offset].highlight = additionalHitsDict[hit._nested.offset].highlight.concat(hit.highlight["additional.attr_set.k"]);
+          });
+        });
+      }
+      const additionalHits = [];
+      for (let key in additionalHitsDict) {
+        const tmp = {};
+        tmp.content = additionalHitsDict[key].source;
+        tmp.highlight = {};
+        tmp.highlight["additional.attr_set.k"] = utils.consolidateHighlight(additionalHitsDict[key].highlight);
+        additionalHits.push(tmp);
+      }
+      return {content: ds._source, highlight: ds.highlight, additionalHits: additionalHits};
+    }
     return {content: ds._source, highlight: ds.highlight};
   });
   result.total = searchResults.hits.total.value;

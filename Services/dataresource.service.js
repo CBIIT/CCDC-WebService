@@ -8,15 +8,23 @@ const utils = require("../Utils");
 
 const getLanding = async () => {
   let landingKey = cacheKeyGenerator.landingKey();
-  let randomN = cache.getValue(landingKey);
-  if(!randomN){
+  let landingList = cache.getValue(landingKey);
+  if(!landingList){
     let dataresourcesAll = await getAll();
-    //pick random n, save to landing cache and return
-    randomN = utils.getRandom(dataresourcesAll, config.drDisplayAmount);
-    cache.setValue(landingKey, randomN, config.itemTTL/6);
+    dataresourcesAll.sort((firstEL, secondEL) => {
+      //return secondEL.count > firstEL.count ? 1 : -1;
+      return secondEL.resource_name.toLowerCase() < firstEL.resource_name.toLowerCase() ? 1 : -1;
+    });
+    landingList = dataresourcesAll.map((ds) => {
+      return {
+        data_resource_id: ds.data_resource_id,
+        resource_name: ds.resource_name,
+        description: ds.description
+      };
+    });
+    cache.setValue(landingKey, landingList, config.itemTTL);
   }
-
-  return randomN;
+  return landingList;
 };
 
 const getResourceTotal = async () => {
@@ -79,7 +87,7 @@ const getFilters = async () => {
   if(!filters){
     //querying elasticsearch, save to dataresources cache
     //let sql = "select lt.term_name as name, lvs.permissible_value as value from lu_terms lt, lu_value_set lvs where lt.id = lvs.term_id and lt.term_name in (?,?,?,?,?,?,?,?,?,?,?,?)";
-    let sql = "select data_element, element_value, dataset_count from aggragation where data_element in (?,?)";
+    let sql = "select data_element, element_value, dataset_count from aggragation where data_element in (?,?) and dataset_count > 0";
 
     let inserts = [
       "Resource Type",
