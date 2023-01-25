@@ -147,6 +147,10 @@ const export2CSV = async (req, res) => {
       value: "case_sex"
     },
     {
+      label: "Case Gender",
+      value: "case_gender"
+    },
+    {
       label: "Case Tumor Site",
       value: "case_tumor_site"
     },
@@ -165,6 +169,22 @@ const export2CSV = async (req, res) => {
     {
       label: "Sample Analyte Type",
       value: "sample_analyte_type"
+    },
+    {
+      label: "Sample Anatomic Site",
+      value: "sample_anatomic_site"
+    },
+    {
+      label: "Sample Composition Type",
+      value: "sample_composition_type"
+    },
+    {
+      label: "Sample is Normal",
+      value: "sample_is_normal"
+    },
+    {
+      label: "Sample is Xenograft",
+      value: "sample_is_xenograft"
     },
     {
       label: "Additional Data",
