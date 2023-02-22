@@ -95,6 +95,10 @@ const export2CSV = async (req, res) => {
       value: 'data_resource_id'
     },
     {
+      label: 'Dataset ID',
+      value: 'dataset_id'
+    },
+    {
       label: 'Dataset',
       value: 'dataset_name'
     },
