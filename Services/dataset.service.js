@@ -66,7 +66,7 @@ const export2CSV = async (searchText, filters, options) => {
   let searchResults = await elasticsearch.search(config.indexDS, query);
   let dataElements = ["case_disease_diagnosis", "case_age_at_diagnosis",
    "case_ethnicity", "case_race", "case_sex", "case_tumor_site",
-    "case_treatment_administered", "case_treatment_outcome", "sample_assay_method", "sample_analyte_type"];
+    "case_treatment_administered", "case_treatment_outcome", "sample_assay_method", "sample_analyte_type", "sample_anatomic_site", "sample_composition_type", "sample_is_normal", "sample_is_xenograft"];
   let datasets = searchResults.hits.map((ds) => {
     let tmp = ds._source;
     dataElements.forEach((de) => {
