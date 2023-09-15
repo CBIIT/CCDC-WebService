@@ -6,7 +6,7 @@ const mysql = require("../Components/mysql");
 const getSiteDataUpdate = async () => {
   let siteUpdateDateKey = cacheKeyGenerator.siteUpdateDateKey();
   let date = cache.getValue(siteUpdateDateKey);
-  if(!date){
+  if (!date) {
     let sql = "select data_element, element_value, dataset_count from aggragation where data_element=?";
 
     let inserts = [
@@ -15,7 +15,7 @@ const getSiteDataUpdate = async () => {
     sql = mysql.format(sql, inserts);
     const result = await mysql.query(sql);
     //group by data
-    if(result.length > 0){
+    if (result.length > 0) {
       date = result[0].element_value;
       cache.setValue(siteUpdateDateKey, date, config.itemTTL);
     }
@@ -27,13 +27,13 @@ const getSiteDataUpdate = async () => {
 const getWidgetUpdate = async () => {
   let widgetUpdateKey = cacheKeyGenerator.widgetUpdateKey();
   let result = cache.getValue(widgetUpdateKey);
-  if(!result) {
+  if (!result) {
     let sql = "select id, log_type, title, post_date, content_type, description from changelog order by post_date desc limit 3";
 
     let inserts = [];
     sql = mysql.format(sql, inserts);
     result = await mysql.query(sql);
-    if(result.length > 0){
+    if (result.length > 0) {
       cache.setValue(widgetUpdateKey, result, config.itemTTL);
     }
   }
@@ -41,15 +41,32 @@ const getWidgetUpdate = async () => {
 };
 
 const getSiteUpdate = async (pageInfo) => {
-    let sql = "select id, post_date, content_type, title, description as highlight, details as description from changelog where log_type = 1 order by post_date desc limit ?, ?";
+  let sql = "select id, post_date, content_type, title, description as highlight, details as description from changelog where log_type = 1 order by post_date desc limit ?, ?";
 
-    let inserts = [
-      ( pageInfo.page - 1 ) * pageInfo.pageSize,
-      pageInfo.pageSize
-    ];
-    sql = mysql.format(sql, inserts);
-    const result = await mysql.query(sql);
-    return result;
+  let inserts = [
+    ( pageInfo.page - 1 ) * pageInfo.pageSize,
+    pageInfo.pageSize
+  ];
+  sql = mysql.format(sql, inserts);
+  const result = await mysql.query(sql);
+  return result;
+};
+
+/**
+ * Retrieves glossary terms by specified glossary term names
+ * @param {string[]} termNames Array of names of glossary terms to search for
+ * @returns {object} Map of glossary term names to glossary terms
+ */
+const getGlossaryTerms = async (termNames) => {
+  const terms = {};
+
+  termNames.forEach((termName) => {
+    const term = {};
+
+    terms[termName] = term;
+  });
+
+  return terms;
 };
 
 module.exports = {
