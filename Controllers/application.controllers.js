@@ -29,8 +29,20 @@ const getSiteUpdate = async (req, res) => {
   res.json({status:"success", data: result});
 };
 
+const getGlossaryTerms = async (req, res) => {
+  const body = req.body;
+  let termNames = body.termNames ? body.termNames : [];
+
+  const result = await applicationService.getGlossaryTerms(termNames);
+  res.json({
+    status: 'success',
+    data: result,
+  });
+}
+
 module.exports = {
   version,
-  getWidgetUpdate,
+  getGlossaryTerms,
   getSiteUpdate,
+  getWidgetUpdate,
 };

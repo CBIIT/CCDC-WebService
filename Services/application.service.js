@@ -58,19 +58,32 @@ const getSiteUpdate = async (pageInfo) => {
  * @returns {object} Map of glossary term names to glossary terms
  */
 const getGlossaryTerms = async (termNames) => {
-  const terms = {};
+  let inserts = [];
+  let results = [];
+  let sql = '';
+  let terms = {};
 
-  termNames.forEach((termName) => {
-    const term = {};
+  // Special case for returning all terms if no names specified
+  if (termNames.length === 0) {
+    sql = 'SELECT * FROM glossary ORDER BY term_name';
+  } else {
+    inserts = [...inserts, [termNames]];
+    sql = 'SELECT * FROM glossary WHERE term_name IN ? ORDER BY term_name';
+  }
 
-    terms[termName] = term;
+  sql = mysql.format(sql, inserts);
+  results = await mysql.query(sql);
+
+  results.forEach((term) => {
+    terms[term.term_name] = term;
   });
 
   return terms;
 };
 
 module.exports = {
+  getGlossaryTerms,
   getSiteDataUpdate,
-  getWidgetUpdate,
   getSiteUpdate,
+  getWidgetUpdate,
 };
