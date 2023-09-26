@@ -6,5 +6,6 @@ router.get("/version", applicationControllers.version);
 router.get("/widgetupdate", applicationControllers.getWidgetUpdate);
 router.post("/siteupdate", applicationControllers.getSiteUpdate);
 router.post('/glossaryTerms', applicationControllers.getGlossaryTerms);
+router.post('/glossaryTermsByFirstLetter', applicationControllers.getGlossaryTermsByFirstLetter);
 
 module.exports = router;

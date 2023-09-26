@@ -75,14 +75,43 @@ const getGlossaryTerms = async (termNames) => {
   results = await mysql.query(sql);
 
   results.forEach((term) => {
-    terms[term.term_name] = term;
+    terms[term.term_name] = term.definition;
   });
+
+  return terms;
+};
+
+/**
+ * Retrieves glossary terms whose names start with the specified letter
+ * @param {string} firstLetter The letter that the term names should start with
+ * @returns {object[]} Array of glossary terms
+ */
+const getGlossaryTermsByFirstLetter = async (firstLetter) => {
+  let inserts = [];
+  let results = [];
+  let sql = '';
+
+  if (!firstLetter || firstLetter.length > 1) {
+    throw new Error('Argument should be exactly one character long.');
+  }
+
+  sql = `
+    SELECT
+      term_name AS \`name\`,
+      term_category AS category,
+      \`definition\`,
+      \`reference\`
+    FROM glossary
+    WHERE term_name LIKE '${firstLetter}%'
+    ORDER BY term_name;`;
+  terms = await mysql.query(sql);
 
   return terms;
 };
 
 module.exports = {
   getGlossaryTerms,
+  getGlossaryTermsByFirstLetter,
   getSiteDataUpdate,
   getSiteUpdate,
   getWidgetUpdate,

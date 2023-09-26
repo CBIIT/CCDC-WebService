@@ -36,13 +36,33 @@ const getGlossaryTerms = async (req, res) => {
   const result = await applicationService.getGlossaryTerms(termNames);
   res.json({
     status: 'success',
-    data: result,
+    definitions: result,
   });
-}
+};
+
+const getGlossaryTermsByFirstLetter = async (req, res) => {
+  const body = req.body;
+  let firstLetter = body.firstLetter ? body.firstLetter : '';
+
+  try {
+    const terms = await applicationService.getGlossaryTermsByFirstLetter(firstLetter);
+    res.status(200);
+    res.json({
+      status: 'success',
+      terms,
+    });
+  } catch (error) {
+    res.status(400);
+    res.json({
+      status: 'error',
+    });
+  }
+};
 
 module.exports = {
   version,
   getGlossaryTerms,
+  getGlossaryTermsByFirstLetter,
   getSiteUpdate,
   getWidgetUpdate,
 };
