@@ -122,7 +122,6 @@ const getFirstLettersInGlossary = async () => {
     GROUP BY letter;`;
   const results = await mysql.query(sql);
   letters = results.map((result) => result.letter);
-  console.log(letters);
 
   return letters;
 };
