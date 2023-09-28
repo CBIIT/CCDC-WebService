@@ -87,8 +87,7 @@ const getGlossaryTerms = async (termNames) => {
  * @returns {object[]} Array of glossary terms
  */
 const getGlossaryTermsByFirstLetter = async (firstLetter) => {
-  let inserts = [];
-  let results = [];
+  let terms = [];
   let sql = '';
 
   if (!firstLetter || firstLetter.length > 1) {
@@ -109,7 +108,27 @@ const getGlossaryTermsByFirstLetter = async (firstLetter) => {
   return terms;
 };
 
+/**
+ * Retrieves a list of all letters that glossary terms start with
+ * @returns {string[]} List of letters
+ */
+const getFirstLettersInGlossary = async () => {
+  let letters = [];
+  let sql = '';
+
+  sql = `
+    SELECT UPPER(LEFT(term_name, 1)) AS letter
+    FROM ccdc.glossary
+    GROUP BY letter;`;
+  const results = await mysql.query(sql);
+  letters = results.map((result) => result.letter);
+  console.log(letters);
+
+  return letters;
+};
+
 module.exports = {
+  getFirstLettersInGlossary,
   getGlossaryTerms,
   getGlossaryTermsByFirstLetter,
   getSiteDataUpdate,

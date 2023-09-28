@@ -59,8 +59,27 @@ const getGlossaryTermsByFirstLetter = async (req, res) => {
   }
 };
 
+const getFirstLettersInGlossary = async (req, res) => {
+  const body = req.body;
+
+  try {
+    const letters = await applicationService.getFirstLettersInGlossary();
+    res.status(200);
+    res.json({
+      status: 'success',
+      letters,
+    });
+  } catch (error) {
+    res.status(500);
+    res.json({
+      status: 'error',
+    });
+  }
+}
+
 module.exports = {
   version,
+  getFirstLettersInGlossary,
   getGlossaryTerms,
   getGlossaryTermsByFirstLetter,
   getSiteUpdate,
