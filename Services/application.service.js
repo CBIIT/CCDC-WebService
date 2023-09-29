@@ -113,7 +113,8 @@ const getGlossaryTermsByFirstLetter = async (firstLetter) => {
  * @returns {string[]} List of letters
  */
 const getFirstLettersInGlossary = async () => {
-  const letters = {};
+  let glossaryLettersKey = cacheKeyGenerator.glossaryLettersKey();
+  let letters = cache.getValue(glossaryLettersKey);
   const alphabet = [
     'A', 'B', 'C', 'D', 'E',
     'F', 'G', 'H', 'I', 'J',
@@ -127,16 +128,24 @@ const getFirstLettersInGlossary = async () => {
     FROM ccdc.glossary
     GROUP BY letter;
   `;
-  let results = await mysql.query(sql);
-  results = results.map((result) => result.letter);
 
-  alphabet.forEach((letter) => {
-    if (results.includes(letter)) {
-      letters[letter] = true;
-    } else {
-      letters[letter] = false;
+  if (!letters) {
+    let results = await mysql.query(sql);
+    results = results.map((result) => result.letter);
+    letters = {};
+
+    alphabet.forEach((letter) => {
+      if (results.includes(letter)) {
+        letters[letter] = true;
+      } else {
+        letters[letter] = false;
+      }
+    });
+
+    if (letters.length > 0) {
+      cache.setValue(glossaryLettersKey, letters, config.itemTTL);
     }
-  });
+  }
 
   return letters;
 };
