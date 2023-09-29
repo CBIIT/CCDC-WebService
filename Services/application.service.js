@@ -113,15 +113,30 @@ const getGlossaryTermsByFirstLetter = async (firstLetter) => {
  * @returns {string[]} List of letters
  */
 const getFirstLettersInGlossary = async () => {
-  let letters = [];
-  let sql = '';
-
-  sql = `
+  const letters = {};
+  const alphabet = [
+    'A', 'B', 'C', 'D', 'E',
+    'F', 'G', 'H', 'I', 'J',
+    'K', 'L', 'M', 'N', 'O',
+    'P', 'Q', 'R', 'S', 'T',
+    'U', 'V', 'W', 'X', 'Y',
+    'Z',
+  ];
+  const sql = `
     SELECT UPPER(LEFT(term_name, 1)) AS letter
     FROM ccdc.glossary
-    GROUP BY letter;`;
-  const results = await mysql.query(sql);
-  letters = results.map((result) => result.letter);
+    GROUP BY letter;
+  `;
+  let results = await mysql.query(sql);
+  results = results.map((result) => result.letter);
+
+  alphabet.forEach((letter) => {
+    if (results.includes(letter)) {
+      letters[letter] = true;
+    } else {
+      letters[letter] = false;
+    }
+  });
 
   return letters;
 };
