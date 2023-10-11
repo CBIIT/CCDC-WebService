@@ -60,6 +60,17 @@ const search = async (req, res) => {
     res.json({status:"success", data: data});
 };
 
+const addURL = (sr, attId, attUrl, addUrl) => {
+  let URL = ''; 
+  sr[attId] && sr[attId].forEach((id, index) => {
+    URL =  URL + addUrl + id;
+    if (index < sr[attId].length-1) {
+      URL += ";";
+    }
+  });
+  sr[attUrl] = URL;
+};
+
 const export2CSV = async (req, res) => {
   const body = req.body;
   let searchText = body.search_text ? body.search_text.trim() : "";
@@ -195,16 +206,32 @@ const export2CSV = async (req, res) => {
       value: "dbGaP Study Identifier"
     },
     {
+      label: "dbGap Study URL",
+      value: "dbGap Study URL"
+    },
+    {
       label: "GEO Study Identifier",
       value: "GEO Study Identifier"
+    },
+    {
+      label: "GEO Study URL",
+      value: "GEO Study URL"
     },
     {
       label: "Clinical Trial Identifier",
       value: "Clinical Trial Identifier"
     },
     {
+      label: "Clinical Trial URL",
+      value: "Clinical Trial URL"
+    },
+    {
       label: "SRA Study Identifier",
       value: "SRA Study Identifier"
+    },
+    {
+      label: "SRA Study URL",
+      value: "SRA Study URL"
     },
     {
       label: "Data Repository",
@@ -224,6 +251,12 @@ const export2CSV = async (req, res) => {
     },
   ];
   const json2csv = new Parser({ fields });
+  searchResult.forEach((sr) => {
+    addURL(sr, "dbGaP Study Identifier", "dbGap Study URL", "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=");
+    addURL(sr, "GEO Study Identifier", "GEO Study URL", "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=");
+    addURL(sr, "Clinical Trial Identifier", "Clinical Trial URL", "https://classic.clinicaltrials.gov/ct2/show/");
+    addURL(sr, "SRA Study Identifier", "SRA Study URL", "https://trace.ncbi.nlm.nih.gov/Traces/?view=study&acc=");
+  });
   const csv = json2csv.parse(searchResult);
   res.header('Content-Type', 'text/csv');
   res.attachment("export.csv");
