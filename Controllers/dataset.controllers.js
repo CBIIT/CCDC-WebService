@@ -91,16 +91,16 @@ const export2CSV = async (req, res) => {
   const searchResult = await datasetService.export2CSV(searchText, filters, options);
   const fields = [
     {
+      label: 'Dataset Title',
+      value: 'dataset_name'
+    },
+    {
       label: 'Resource',
       value: 'data_resource_id'
     },
     {
       label: 'Dataset ID',
       value: 'dataset_id'
-    },
-    {
-      label: 'Dataset',
-      value: 'dataset_name'
     },
     {
       label: 'Description',
@@ -189,6 +189,34 @@ const export2CSV = async (req, res) => {
     {
       label: "Sample is Xenograft",
       value: "sample_is_xenograft"
+    },
+    {
+      label: "dbGaP Study Identifier",
+      value: "dbGaP Study Identifier"
+    },
+    {
+      label: "GEO Study Identifier",
+      value: "GEO Study Identifier"
+    },
+    {
+      label: "Clinical Trial Identifier",
+      value: "Clinical Trial Identifier"
+    },
+    {
+      label: "SRA Study Identifier",
+      value: "SRA Study Identifier"
+    },
+    {
+      label: "Data Repository",
+      value: "Data Repository"
+    },
+    {
+      label: "Grant ID",
+      value: "Grant ID"
+    },
+    {
+      label: "Grant Name",
+      value: "Grant Name"
     },
     {
       label: "Additional Data",
