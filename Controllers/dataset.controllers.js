@@ -106,20 +106,28 @@ const export2CSV = async (req, res) => {
       value: 'dataset_name'
     },
     {
-      label: 'Resource',
-      value: 'data_resource_id'
-    },
-    {
-      label: 'Dataset ID',
-      value: 'dataset_id'
-    },
-    {
       label: 'Description',
       value: 'desc'
     },
     {
-      label: 'Primary Dataset Scope',
-      value: 'primary_dataset_scope'
+      label: "dbGaP Study Identifier",
+      value: "dbGaP Study Identifier"
+    },
+    {
+      label: "dbGap Study URL",
+      value: "dbGap Study URL"
+    },
+    {
+      label: "GEO Study Identifier",
+      value: "GEO Study Identifier"
+    },
+    {
+      label: "Clinical Trial Identifier",
+      value: "Clinical Trial Identifier"
+    },
+    {
+      label: "SRA Study Identifier",
+      value: "SRA Study Identifier"
     },
     {
       label: 'Point of Contact',
@@ -128,6 +136,10 @@ const export2CSV = async (req, res) => {
     {
       label: 'Point of Contact Email',
       value: 'poc_email'
+    },
+    {
+      label: "Data Repository URL",
+      value: "Data Repository"
     },
     {
       label: 'Published In',
@@ -202,40 +214,16 @@ const export2CSV = async (req, res) => {
       value: "sample_is_xenograft"
     },
     {
-      label: "dbGaP Study Identifier",
-      value: "dbGaP Study Identifier"
-    },
-    {
-      label: "dbGap Study URL",
-      value: "dbGap Study URL"
-    },
-    {
-      label: "GEO Study Identifier",
-      value: "GEO Study Identifier"
-    },
-    {
       label: "GEO Study URL",
       value: "GEO Study URL"
-    },
-    {
-      label: "Clinical Trial Identifier",
-      value: "Clinical Trial Identifier"
     },
     {
       label: "Clinical Trial URL",
       value: "Clinical Trial URL"
     },
     {
-      label: "SRA Study Identifier",
-      value: "SRA Study Identifier"
-    },
-    {
       label: "SRA Study URL",
       value: "SRA Study URL"
-    },
-    {
-      label: "Data Repository",
-      value: "Data Repository"
     },
     {
       label: "Grant ID",
@@ -248,6 +236,18 @@ const export2CSV = async (req, res) => {
     {
       label: "Additional Data",
       value: "additional"
+    },
+    {
+      label: 'Primary Dataset Scope',
+      value: 'primary_dataset_scope'
+    },
+    {
+      label: 'Resource',
+      value: 'data_resource_id'
+    },
+    {
+      label: 'Dataset ID',
+      value: 'dataset_id'
     },
   ];
   const json2csv = new Parser({ fields });
