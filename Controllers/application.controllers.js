@@ -29,8 +29,59 @@ const getSiteUpdate = async (req, res) => {
   res.json({status:"success", data: result});
 };
 
+const getGlossaryTerms = async (req, res) => {
+  const body = req.body;
+  let termNames = body.termNames ? body.termNames : [];
+
+  const result = await applicationService.getGlossaryTerms(termNames);
+  res.json({
+    status: 'success',
+    definitions: result,
+  });
+};
+
+const getGlossaryTermsByFirstLetter = async (req, res) => {
+  const body = req.body;
+  let firstLetter = body.firstLetter ? body.firstLetter : '';
+
+  try {
+    const terms = await applicationService.getGlossaryTermsByFirstLetter(firstLetter);
+    res.status(200);
+    res.json({
+      status: 'success',
+      terms,
+    });
+  } catch (error) {
+    res.status(400);
+    res.json({
+      status: 'error',
+    });
+  }
+};
+
+const getFirstLettersInGlossary = async (req, res) => {
+  const body = req.body;
+
+  try {
+    const letters = await applicationService.getFirstLettersInGlossary();
+    res.status(200);
+    res.json({
+      status: 'success',
+      letters,
+    });
+  } catch (error) {
+    res.status(500);
+    res.json({
+      status: 'error',
+    });
+  }
+}
+
 module.exports = {
   version,
-  getWidgetUpdate,
+  getFirstLettersInGlossary,
+  getGlossaryTerms,
+  getGlossaryTermsByFirstLetter,
   getSiteUpdate,
+  getWidgetUpdate,
 };

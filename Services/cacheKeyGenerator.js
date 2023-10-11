@@ -44,4 +44,8 @@ cacheKeyGenerator.widgetUpdateKey = () => {
   return "widget_update";
 };
 
+cacheKeyGenerator.glossaryLettersKey = () => {
+  return 'glossary_letters';
+};
+
 module.exports = cacheKeyGenerator;

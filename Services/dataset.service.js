@@ -67,6 +67,7 @@ const export2CSV = async (searchText, filters, options) => {
   let dataElements = ["case_disease_diagnosis", "case_age_at_diagnosis",
    "case_ethnicity", "case_race", "case_sex", "case_gender", "case_tumor_site",
     "case_treatment_administered", "case_treatment_outcome", "sample_assay_method", "sample_analyte_type", "sample_anatomic_site", "sample_composition_type", "sample_is_normal", "sample_is_xenograft"];
+  let additionalDataElements = ["dbGaP Study Identifier", "GEO Study Identifier", "Clinical Trial Identifier", "SRA Study Identifier", "Data Repository", "Grant ID", "Grant Name"];
   let datasets = searchResults.hits.map((ds) => {
     let tmp = ds._source;
     dataElements.forEach((de) => {
@@ -76,14 +77,33 @@ const export2CSV = async (searchText, filters, options) => {
         });
       }
     });
+    additionalDataElements.forEach((ade) => {
+      if (tmp.additional) {
+        tmp.additional.forEach((add) => {
+          if (ade === add.attr_name) {
+            tmp[ade] = add.attr_set.map((t) => {
+              return t.k;
+            });
+          }
+        })
+      }
+    });
     if(tmp.additional) {
       tmp.additional = tmp.additional.map((t) => {
-        let sets = [];
-        t.attr_set.forEach((as) => {
-          sets.push(as.k);
-        });
-        return t.attr_name + " (" + sets.join() + ")";
+        // add the element which is not in the additionalDataElements list
+        if (!additionalDataElements.includes(t.attr_name)) {
+          let sets = [];
+          t.attr_set.forEach((as) => {
+            sets.push(as.k);
+          });
+          return t.attr_name + " (" + sets.join() + ")";
+        }
       });
+      tmp.additional = tmp.additional.filter(a=>a);
+      //when there is no element in tmp.additional array, return '' instead of []
+      if (tmp.additional.length === 0) {
+        tmp.additional = '';
+      }
     }
     if(tmp.projects) {
       if (!tmp.additional) {
