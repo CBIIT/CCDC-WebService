@@ -81,14 +81,16 @@ const export2CSV = async (searchText, filters, options) => {
       if (tmp.additional) {
         tmp.additional.forEach((add) => {
           if (ade === add.attr_name) {
-            if (ade === "Grant") {
-              ade = "Grant Name"
-            }
             tmp[ade] = add.attr_set.map((t) => {
               return t.k;
             });
           }
         })
+        if (tmp["Grant"] && tmp["Grant Name"]) {
+          tmp["Grant Name"] = tmp["Grant Name"].concat(tmp["Grant"]);
+        } else if (tmp["Grant"]) {
+          tmp["Grant Name"] = tmp["Grant"];
+        }
       }
     });
     if(tmp.additional) {
