@@ -279,10 +279,21 @@ const getAdvancedFilters = async (req, res) => {
   res.json({status: "success", data: advancedFilters});
 };
 
+const getDatasetCount = async (req, res) => {
+  let options = {};
+  let filters = [];
+  let searchText = "";
+  options.pageInfo = {page: 1, pageSize: 10};
+  options.sort = {k: "data_resource_id", v: "asc"};
+  const searchResult = await datasetService.search(searchText, filters, options);
+  res.json({status: "success", data: searchResult.total});
+}
+
 module.exports = {
 	search,
   export2CSV,
   getFilters,
 	getById,
   getAdvancedFilters,
+  getDatasetCount,
 };
