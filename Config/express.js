@@ -23,7 +23,7 @@ module.exports = function(app) {
   
   app.use(function (req, res, next) {
     const corsWhitelist = [
-      "http://localhost",
+      "http://localhost:3002",
       "https://datacatalog-dev.ccdi.cancer.gov",
       "https://datacatalog-qa.ccdi.cancer.gov",
       "https://datacatalog-stage.ccdi.cancer.gov",
