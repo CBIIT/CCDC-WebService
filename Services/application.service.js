@@ -87,7 +87,7 @@ const getGlossaryTerms = async (termNames) => {
  * @returns {object[]} Array of glossary terms
  */
 const getGlossaryTermsByFirstLetter = async (firstLetter) => {
-  let terms = [];
+  let terms = {};
   let sql = '';
 
   if (!firstLetter || firstLetter.length > 1) {
@@ -103,8 +103,8 @@ const getGlossaryTermsByFirstLetter = async (firstLetter) => {
     FROM glossary
     WHERE term_name LIKE '${firstLetter}%'
     ORDER BY term_name;`;
-  terms = await mysql.query(sql);
-
+  termList = await mysql.query(sql);
+  terms[firstLetter] = termList;
   return terms;
 };
 
