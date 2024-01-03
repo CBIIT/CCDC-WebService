@@ -22,7 +22,21 @@ module.exports = function(app) {
   app.use(compression());
   
   app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", config.orginDomain);
+    // const corsWhitelist = [
+    //   "http://localhost:3002",
+    //   "https://datacatalog-dev.ccdi.cancer.gov",
+    //   "https://datacatalog-qa.ccdi.cancer.gov",
+    //   "https://datacatalog-stage.ccdi.cancer.gov",
+    //   "https://datacatalog.ccdi.cancer.gov",
+    //   "https://ccdi-dev.cancer.gov",
+    //   "https://ccdi-qa.cancer.gov",
+    //   "https://ccdi-stage.cancer.gov",
+    //   "https://ccdi.cancer.gov"
+    // ];
+    // if (corsWhitelist.indexOf(req.headers.origin) !== -1) {
+    //   res.header('Access-Control-Allow-Origin', req.headers.origin);
+    // }
+    res.header("Access-Control-Allow-Origin", "*");
 		res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
 		res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
