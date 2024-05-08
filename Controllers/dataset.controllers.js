@@ -206,6 +206,10 @@ const export2CSV = async (req, res) => {
       value: "sample_composition_type"
     },
     {
+      label: "Sample Is Cell Line",
+      value: "sample_is_cell_line"
+    },
+    {
       label: "Sample is Normal",
       value: "sample_is_normal"
     },

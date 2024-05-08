@@ -87,6 +87,7 @@ queryGenerator.getSearchAggregationQuery = (searchText) => {
           "sample_assay_method.k",
           "sample_composition_type.k",
           "sample_repository_name.k",
+          "sample_is_cell_line.k",
           "sample_is_normal.k",
           "sample_is_xenograft.k"
         ];
@@ -233,6 +234,7 @@ queryGenerator.getSearchQueryV2 = (searchText, filters, options) => {
           "sample_assay_method.k",
           "sample_composition_type.k",
           "sample_repository_name.k",
+          "sample_is_cell_line.k",
           "sample_is_normal.k",
           "sample_is_xenograft.k"
         ];
@@ -371,6 +373,7 @@ queryGenerator.getSearchQueryV2 = (searchText, filters, options) => {
       "sample_assay_method.k": { number_of_fragments: 0 },
       "sample_composition_type.k": { number_of_fragments: 0 },
       "sample_repository_name.k": { number_of_fragments: 0 },
+      "sample_is_cell_line.k": { number_of_fragments: 0 },
       "sample_is_normal.k": { number_of_fragments: 0 },
       "sample_is_xenograft.k": { number_of_fragments: 0 },
       "projects.p_k": { number_of_fragments: 0 }
@@ -430,6 +433,7 @@ queryGenerator.getSearchQueryV1 = (searchText, filters, options) => {
       "sample_assay_method.k",
       "sample_composition_type.k",
       "sample_repository_name.k",
+      "sample_is_cell_line.k",
       "sample_is_normal.k",
       "sample_is_xenograft.k"
     ];
@@ -631,6 +635,7 @@ queryGenerator.getSearchQueryV1 = (searchText, filters, options) => {
       "sample_assay_method.k": { number_of_fragments: 0 },
       "sample_composition_type.k": { number_of_fragments: 0 },
       "sample_repository_name.k": { number_of_fragments: 0 },
+      "sample_is_cell_line.k": { number_of_fragments: 0 },
       "sample_is_normal.k": { number_of_fragments: 0 },
       "sample_is_xenograft.k": { number_of_fragments: 0 }
     },
