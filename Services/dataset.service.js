@@ -66,7 +66,7 @@ const export2CSV = async (searchText, filters, options) => {
   let searchResults = await elasticsearch.search(config.indexDS, query);
   let dataElements = ["case_disease_diagnosis", "case_age_at_diagnosis",
    "case_ethnicity", "case_race", "case_sex", "case_gender", "case_tumor_site",
-    "case_treatment_administered", "case_treatment_outcome", "sample_assay_method", "sample_analyte_type", "sample_anatomic_site", "sample_composition_type", "sample_is_normal", "sample_is_xenograft"];
+    "case_treatment_administered", "case_treatment_outcome", "sample_assay_method", "sample_analyte_type", "sample_anatomic_site", "sample_composition_type", "sample_is_cell_line","sample_is_normal", "sample_is_xenograft"];
   let additionalDataElements = ["dbGaP Study Identifier", "GEO Study Identifier", "Clinical Trial Identifier", "SRA Study Identifier", "Data Repository", "Grant ID", "Grant Name", "Grant"];
   let datasets = searchResults.hits.map((ds) => {
     let tmp = ds._source;
@@ -153,6 +153,7 @@ const getFilters = async () => {
 
     let inserts = [
       "Case Disease Diagnosis",
+      "Sample Is Cell Line",
       "Case Tumor Site",
       "Case Treatment Administered",
       "Sample Assay Method",
@@ -213,6 +214,7 @@ const getAdvancedFilters = async () => {
 
     let inserts = [
       "Case Disease Diagnosis",
+      "Sample Is Cell Line",
       "Case Tumor Site",
       "Case Treatment Administered",
       "Case Treatment Outcome",
