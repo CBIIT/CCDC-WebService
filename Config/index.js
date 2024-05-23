@@ -95,6 +95,7 @@ var config = {
     "sample_assay_method",
     "sample_composition_type",
     "sample_repository_name",
+    "sample_is_cell_line",
     "sample_is_normal",
     "sample_is_xenograft"
   ],
