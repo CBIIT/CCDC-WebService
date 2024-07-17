@@ -8,7 +8,7 @@ const version = async (req, res) => {
     let data = {};
     data.softwareVersion = config.softwareVersion;
     data.siteDataUpdate = searchResult;
-    res.json({status:"success", data: data});
+    res.json({status:"success_1", data: data});
 };
 
 const getWidgetUpdate = async (req, res) => {
