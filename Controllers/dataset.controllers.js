@@ -173,10 +173,10 @@ const export2CSV = async (req, res) => {
       label: "Case Sex",
       value: "case_sex"
     },
-    {
-      label: "Case Gender",
-      value: "case_gender"
-    },
+    // {
+    //   label: "Case Gender",
+    //   value: "case_gender"
+    // },
     {
       label: "Case Tumor Site",
       value: "case_tumor_site"
