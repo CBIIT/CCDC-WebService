@@ -23,6 +23,6 @@
     "mysql": "^2.18.1",
     "node-cache": "^5.1.2",
     "winston": "^3.8.2",
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.1.4"
   }
 }
