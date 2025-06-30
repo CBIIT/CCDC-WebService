@@ -1,4 +1,4 @@
-FROM node:22.14.0-alpine3.21
+FROM node:24.0.2-alpine3.21
 
 ENV PORT 8080
 ENV NODE_ENV production
