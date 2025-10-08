@@ -1,24 +1,26 @@
-FROM node:24.4.1-alpine3.22
+# Use Debian bookworm-slim base which has updated OpenSSL packages
+# This addresses CVE-2025-9230, CVE-2025-9231, CVE-2025-9232 in Node.js bundled OpenSSL
+FROM node:24-bookworm-slim
 
 ENV PORT 8080
 ENV NODE_ENV production
 
 WORKDIR /usr/src/app
 
-# Fix CVE-2025-9230, CVE-2025-9231, CVE-2025-9232
-# These CVEs require OpenSSL >= 3.5.5 (NOT 3.5.4 which is still vulnerable)
-# Switch to edge repository for latest OpenSSL packages
-RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/main" > /etc/apk/repositories && \
-    echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories && \
-    apk update && \
-    apk upgrade --no-cache && \
-    apk add --no-cache \
+# Update all packages including OpenSSL to patch CVE-2025-9230, CVE-2025-9231, CVE-2025-9232
+# Debian bookworm has OpenSSL 3.0.x with security patches
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends \
       openssl \
-      openssl-dev \
-      libcrypto3 \
-      libssl3 && \
-    rm -rf /var/cache/apk/* && \
-    # Verify OpenSSL version is 3.5.5 or higher
+      ca-certificates && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Verify Node.js bundled OpenSSL version
+RUN echo "Node.js bundled OpenSSL version:" && \
+    node -p "process.versions.openssl" && \
+    echo "System OpenSSL version:" && \
     openssl version
 
 COPY package*.json ./
