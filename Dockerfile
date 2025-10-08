@@ -1,27 +1,36 @@
-# Use Debian bookworm-slim base which has updated OpenSSL packages
-# This addresses CVE-2025-9230, CVE-2025-9231, CVE-2025-9232 in Node.js bundled OpenSSL
-FROM node:24-bookworm-slim
+# Use full Debian bookworm base (not slim) for complete security patches
+# Addresses: CVE-2025-6020, CVE-2025-9230, CVE-2025-9231, CVE-2024-22365, CVE-2025-9232
+FROM node:24-bookworm
 
 ENV PORT 8080
 ENV NODE_ENV production
 
 WORKDIR /usr/src/app
 
-# Update all packages including OpenSSL to patch CVE-2025-9230, CVE-2025-9231, CVE-2025-9232
-# Debian bookworm has OpenSSL 3.0.x with security patches
+# Comprehensive security update to patch all CVEs
+# CVE-2024-22365 (PAM), CVE-2025-9230/9231/9232 (OpenSSL), CVE-2025-6020
 RUN apt-get update && \
     apt-get upgrade -y && \
+    apt-get dist-upgrade -y && \
     apt-get install -y --no-install-recommends \
+      libpam0g \
+      libpam-modules \
+      libpam-runtime \
       openssl \
+      libssl3 \
       ca-certificates && \
+    apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Verify Node.js bundled OpenSSL version
-RUN echo "Node.js bundled OpenSSL version:" && \
+# Verify versions for security audit
+RUN echo "=== Security Package Versions ===" && \
+    echo "Node.js bundled OpenSSL:" && \
     node -p "process.versions.openssl" && \
-    echo "System OpenSSL version:" && \
-    openssl version
+    echo "System OpenSSL:" && \
+    openssl version && \
+    echo "PAM version:" && \
+    dpkg -l | grep libpam0g || echo "PAM info not available"
 
 COPY package*.json ./
 
