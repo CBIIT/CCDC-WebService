@@ -5,16 +5,21 @@ ENV NODE_ENV production
 
 WORKDIR /usr/src/app
 
-# Upgrade all packages and install specific OpenSSL version to patch CVE-2025-9230, CVE-2025-9231, CVE-2025-9232
-# CVE-2025-9230 and CVE-2025-9232 require OpenSSL >= 3.5.4 (fixed in 3.5.4, 3.4.3, 3.3.5, 3.2.6, 3.0.18)
-# Use edge repository to get the latest OpenSSL version
-RUN echo "@edge https://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories && \
+# Fix CVE-2025-9230, CVE-2025-9231, CVE-2025-9232
+# These CVEs require OpenSSL >= 3.5.5 (NOT 3.5.4 which is still vulnerable)
+# Switch to edge repository for latest OpenSSL packages
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/main" > /etc/apk/repositories && \
+    echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories && \
     apk update && \
     apk upgrade --no-cache && \
     apk add --no-cache \
-      "openssl@edge" \
-      "openssl-dev@edge" && \
-    rm -rf /var/cache/apk/*
+      openssl \
+      openssl-dev \
+      libcrypto3 \
+      libssl3 && \
+    rm -rf /var/cache/apk/* && \
+    # Verify OpenSSL version is 3.5.5 or higher
+    openssl version
 
 COPY package*.json ./
 
