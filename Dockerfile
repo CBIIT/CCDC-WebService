@@ -6,12 +6,14 @@ ENV NODE_ENV production
 WORKDIR /usr/src/app
 
 # Upgrade all packages and install specific OpenSSL version to patch CVE-2025-9230, CVE-2025-9231, CVE-2025-9232
-# CVE-2025-9230 requires OpenSSL >= 3.5.4-r0 in Alpine 3.22
-RUN apk update && \
+# CVE-2025-9230 and CVE-2025-9232 require OpenSSL >= 3.5.4 (fixed in 3.5.4, 3.4.3, 3.3.5, 3.2.6, 3.0.18)
+# Use edge repository to get the latest OpenSSL version
+RUN echo "@edge https://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories && \
+    apk update && \
     apk upgrade --no-cache && \
     apk add --no-cache \
-      "openssl=3.5.4-r0" \
-      "openssl-dev=3.5.4-r0" && \
+      "openssl@edge" \
+      "openssl-dev@edge" && \
     rm -rf /var/cache/apk/*
 
 COPY package*.json ./
