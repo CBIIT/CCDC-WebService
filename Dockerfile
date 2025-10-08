@@ -5,6 +5,9 @@ ENV NODE_ENV production
 
 WORKDIR /usr/src/app
 
+# Still upgrade to be explicit and future-proof in CI
+RUN apk update && apk upgrade --no-cache openssl openssl-dev
+
 COPY package*.json ./
 
 RUN npm ci
