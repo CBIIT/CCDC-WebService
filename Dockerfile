@@ -5,16 +5,20 @@ ENV NODE_ENV production
 
 WORKDIR /usr/src/app
 
-# Still upgrade to be explicit and future-proof in CI
-RUN apk update && apk upgrade --no-cache openssl openssl-dev
+# Upgrade all packages including OpenSSL to patch CVE-2025-9230, CVE-2025-9231, CVE-2025-9232
+RUN apk update && \
+    apk upgrade --no-cache && \
+    apk add --no-cache --upgrade openssl openssl-dev && \
+    apk cache clean
 
 COPY package*.json ./
 
 RUN npm ci
 
-#USER node
-
 COPY  --chown=node:node . .
+
+# Run as non-root user for security
+USER node
 
 EXPOSE 8080 9200 3306
 
