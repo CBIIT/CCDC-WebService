@@ -11,6 +11,12 @@ RUN apk update && \
     apk add --no-cache --upgrade openssl openssl-dev && \
     apk cache clean
 
+RUN apk update && \
+    apk add --no-cache \
+      "openssl=3.5.4-r0" \
+      "openssl-dev=3.5.4-r0" && \
+    rm -rf /var/cache/apk/*
+
 COPY package*.json ./
 
 RUN npm ci
