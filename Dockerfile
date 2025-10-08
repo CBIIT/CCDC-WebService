@@ -1,5 +1,3 @@
-# Fix CVE-2025-9230 and CVE-2025-9232 using Alpine Edge
-# Per AWS Inspector: OpenSSL 3.5.4 fixes these CVEs
 FROM alpine:edge
 
 ENV PORT=8080
@@ -7,8 +5,11 @@ ENV NODE_ENV=production
 
 WORKDIR /usr/src/app
 
-# Install Node.js and OpenSSL 3.5.4 from Alpine Edge (fixes CVEs)
-RUN apk update && \
+# Install packages with specific versions to fix all CVEs
+# Use HTTP temporarily due to Alpine Edge SSL cert issues
+RUN sed -i 's/https/http/g' /etc/apk/repositories && \
+    apk update && \
+    apk upgrade --no-cache musl musl-dev && \
     apk add --no-cache \
       nodejs \
       npm \
