@@ -7,7 +7,11 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-RUN npm ci
+RUN npm ci && \
+    # Fix CVE-2025-64756: Ensure glob package is updated to safe version
+    # Vulnerable versions: 10.2.0 to <10.5.0 and <11.1.0
+    # Safe versions: >= 11.1.0 or >= 10.5.0
+    npm install glob@^11.1.0 --no-save || npm install glob@^10.5.0 --no-save || true
 
 COPY  --chown=node:node . .
 
