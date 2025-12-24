@@ -1,0 +1,39 @@
+name: Test
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "*.*.*"
+      - "main"
+      - "master"
+  pull_request:
+    branches:
+      - "*"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Test Changes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+          cache: "npm"
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Vitest
+        run: npm run test:ci
+
+      - name: Coveralls GitHub Action
+        uses: coverallsapp/github-action@v2
+        continue-on-error: true
