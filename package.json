@@ -1,11 +1,12 @@
 {
   "name": "ccdc",
-  "version": "1.0.0",
+  "version": "1.5.7",
   "description": "Childhood Cancer Data Catalog",
   "main": "app.js",
   "scripts": {
     "start": "nodemon app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest",
+    "test:ci": "TZ=UTC CI=true vitest --reporter verbose --coverage --maxConcurrency=2"
   },
   "author": "Wei Yu",
   "license": "ISC",
@@ -27,5 +28,9 @@
   },
   "overrides": {
     "glob": "^11.1.0"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^4.0.15",
+    "vitest": "^4.0.15"
   }
 }
