@@ -24,7 +24,7 @@
     "mysql": "^2.18.1",
     "node-cache": "^5.1.2",
     "winston": "^3.8.2",
-    "nodemon": "^3.1.4"
+    "nodemon": "^3.1.11"
   },
   "overrides": {
     "glob": "^11.1.0"
