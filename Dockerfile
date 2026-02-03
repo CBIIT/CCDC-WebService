@@ -4,12 +4,13 @@ ENV PORT 8080
 ENV NODE_ENV production
 
 # Update tar to 7.5.7 to fix CVE in npm's bundled tar (7.5.4)
-RUN cd /usr/local/lib/node_modules/npm/node_modules && \
-    rm -rf tar && \
-    npm pack tar@7.5.7 && \
-    tar -xzf tar-7.5.7.tgz && \
-    mv package tar && \
-    rm tar-7.5.7.tgz
+RUN mkdir -p /tmp/tar-update && \
+    cd /tmp/tar-update && \
+    npm init -y && \
+    npm install tar@7.5.7 --legacy-peer-deps && \
+    rm -rf /usr/local/lib/node_modules/npm/node_modules/tar && \
+    cp -r node_modules/tar /usr/local/lib/node_modules/npm/node_modules/ && \
+    rm -rf /tmp/tar-update
 
 WORKDIR /usr/src/app
 
