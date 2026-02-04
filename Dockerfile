@@ -16,6 +16,8 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 
+RUN npm ci
+
 COPY  --chown=node:node . .
 
 # Run as non-root user for security
