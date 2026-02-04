@@ -3,6 +3,9 @@ FROM node:25.6.0-alpine3.23
 ENV PORT 8080
 ENV NODE_ENV production
 
+# Upgrade npm to latest version to address CVE-2026-0775 (npm 11.8.0 vulnerability)
+RUN npm install -g npm@latest
+
 # Update tar to 7.5.7 to fix CVE in npm's bundled tar (7.5.4)
 RUN mkdir -p /tmp/tar-update && \
     cd /tmp/tar-update && \
