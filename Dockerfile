@@ -1,4 +1,4 @@
-FROM node:25-alpine3.23
+FROM node:22.22.0-bullseye-slim
 
 ENV PORT 8080
 ENV NODE_ENV production
