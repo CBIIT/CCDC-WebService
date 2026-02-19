@@ -27,7 +27,8 @@
     "nodemon": "^3.1.11"
   },
   "overrides": {
-    "glob": "^11.1.0"
+    "glob": "^11.1.0",
+    "minimatch": "^3.1.2"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^4.0.15",
