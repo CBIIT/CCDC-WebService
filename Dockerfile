@@ -31,6 +31,8 @@ RUN mkdir -p /tmp/minimatch-update && \
     npm install minimatch@10.2.1 --legacy-peer-deps && \
     rm -rf /usr/local/lib/node_modules/npm/node_modules/minimatch && \
     cp -r node_modules/minimatch /usr/local/lib/node_modules/npm/node_modules/ && \
+    rm -rf /usr/local/lib/node_modules/npm/node_modules/brace-expansion && \
+    cp -r node_modules/brace-expansion /usr/local/lib/node_modules/npm/node_modules/ && \
     rm -rf /tmp/minimatch-update
 
 WORKDIR /usr/src/app
