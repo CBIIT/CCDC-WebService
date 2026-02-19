@@ -24,7 +24,7 @@ RUN mkdir -p /tmp/brace-expansion-update && \
     cp -r node_modules/@isaacs/brace-expansion /usr/local/lib/node_modules/npm/node_modules/@isaacs/ && \
     rm -rf /tmp/brace-expansion-update
 
-# Fix minimatch vulnerability: Update npm's bundled minimatch from 10.1.2 to 10.2.1
+# Fix minimatch vulnerability: Update npm's bundled minimatch from 10.1.2 to 10.2.1 (and deps: brace-expansion, balanced-match)
 RUN mkdir -p /tmp/minimatch-update && \
     cd /tmp/minimatch-update && \
     npm init -y && \
@@ -33,6 +33,8 @@ RUN mkdir -p /tmp/minimatch-update && \
     cp -r node_modules/minimatch /usr/local/lib/node_modules/npm/node_modules/ && \
     rm -rf /usr/local/lib/node_modules/npm/node_modules/brace-expansion && \
     cp -r node_modules/brace-expansion /usr/local/lib/node_modules/npm/node_modules/ && \
+    rm -rf /usr/local/lib/node_modules/npm/node_modules/balanced-match && \
+    cp -r node_modules/balanced-match /usr/local/lib/node_modules/npm/node_modules/ && \
     rm -rf /tmp/minimatch-update
 
 WORKDIR /usr/src/app
