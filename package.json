@@ -23,15 +23,15 @@
     "lodash": "^4.17.21",
     "mysql": "^2.18.1",
     "node-cache": "^5.1.2",
-    "winston": "^3.8.2",
-    "nodemon": "^3.1.11"
+    "winston": "^3.8.2"
   },
   "overrides": {
     "glob": "^11.1.0",
-    "tar": "^7.5.4"
+    "minimatch": "^3.1.2"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^4.0.15",
-    "vitest": "^4.0.15"
+    "vitest": "^4.0.15",
+    "nodemon": "^3.1.11"
   }
 }
