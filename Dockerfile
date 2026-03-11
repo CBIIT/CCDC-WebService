@@ -28,7 +28,7 @@ RUN mkdir -p /tmp/brace-expansion-update && \
 RUN mkdir -p /tmp/minimatch-update && \
     cd /tmp/minimatch-update && \
     npm init -y && \
-    npm install minimatch@10.2.1 --legacy-peer-deps && \
+    npm install minimatch@10.2.3 --legacy-peer-deps && \
     rm -rf /usr/local/lib/node_modules/npm/node_modules/minimatch && \
     cp -r node_modules/minimatch /usr/local/lib/node_modules/npm/node_modules/ && \
     rm -rf /usr/local/lib/node_modules/npm/node_modules/brace-expansion && \
