@@ -1,4 +1,4 @@
-FROM node:25.6.1-slim
+FROM node:25.8.2-slim
 
 ENV PORT 8080
 ENV NODE_ENV production
@@ -6,11 +6,11 @@ ENV NODE_ENV production
 # Upgrade npm to latest version to address CVE-2026-0775 (npm 11.8.0 vulnerability)
 RUN npm install -g npm@latest
 
-# Update tar to 7.5.8 to fix CVE in npm's bundled tar (7.5.4)
+# Update tar to 7.5.11 to fix CVE in npm's bundled tar (7.5.4)
 RUN mkdir -p /tmp/tar-update && \
     cd /tmp/tar-update && \
     npm init -y && \
-    npm install tar@7.5.8 --legacy-peer-deps && \
+    npm install tar@7.5.11 --legacy-peer-deps && \
     rm -rf /usr/local/lib/node_modules/npm/node_modules/tar && \
     cp -r node_modules/tar /usr/local/lib/node_modules/npm/node_modules/ && \
     rm -rf /tmp/tar-update
@@ -28,7 +28,7 @@ RUN mkdir -p /tmp/brace-expansion-update && \
 RUN mkdir -p /tmp/minimatch-update && \
     cd /tmp/minimatch-update && \
     npm init -y && \
-    npm install minimatch@10.2.1 --legacy-peer-deps && \
+    npm install minimatch@10.2.3 --legacy-peer-deps && \
     rm -rf /usr/local/lib/node_modules/npm/node_modules/minimatch && \
     cp -r node_modules/minimatch /usr/local/lib/node_modules/npm/node_modules/ && \
     rm -rf /usr/local/lib/node_modules/npm/node_modules/brace-expansion && \
