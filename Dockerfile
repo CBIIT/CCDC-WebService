@@ -1,4 +1,4 @@
-FROM node:25.8.2-slim
+FROM node:24.16.0-alpine3.23
 
 ENV PORT 8080
 ENV NODE_ENV production
@@ -24,11 +24,13 @@ RUN mkdir -p /tmp/brace-expansion-update && \
     cp -r node_modules/@isaacs/brace-expansion /usr/local/lib/node_modules/npm/node_modules/@isaacs/ && \
     rm -rf /tmp/brace-expansion-update
 
-# Fix minimatch vulnerability: Update npm's bundled minimatch from 10.1.2 to 10.2.1 (and deps: brace-expansion, balanced-match)
+# Fix minimatch vulnerability and CVE-2026-25547: keep npm's unscoped brace-expansion outside vulnerable 5.0.0-5.0.6 range
 RUN mkdir -p /tmp/minimatch-update && \
     cd /tmp/minimatch-update && \
     npm init -y && \
     npm install minimatch@10.2.3 --legacy-peer-deps && \
+    npm install brace-expansion@4.0.1 balanced-match@3.0.1 --legacy-peer-deps --force && \
+    rm -rf node_modules/minimatch/node_modules/brace-expansion && \
     rm -rf /usr/local/lib/node_modules/npm/node_modules/minimatch && \
     cp -r node_modules/minimatch /usr/local/lib/node_modules/npm/node_modules/ && \
     rm -rf /usr/local/lib/node_modules/npm/node_modules/brace-expansion && \
