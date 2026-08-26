@@ -17,6 +17,13 @@ RUN apk upgrade --no-cache \
 # releases: CVE-2026-48930 (critical), CVE-2026-58043, CVE-2026-48615,
 # CVE-2026-48617, CVE-2026-48619, CVE-2026-48937.
 
+# Drop Node's bundled OpenSSL headers. Scanners match openssl/openssl CVEs from
+# opensslv.h under /usr/local/include/node/openssl/archs/...; those headers are
+# only used to compile native addons (node-gyp). This image runs node app.js
+# and does not compile addons at runtime. Node still uses its linked OpenSSL
+# via process.versions.openssl.
+RUN rm -rf /usr/local/include/node/openssl
+
 # Keep npm on the 11.x line that ships with Node 24, then replace bundled copies
 # scanners still flag under npm's node_modules.
 RUN npm install -g npm@11.19.0
