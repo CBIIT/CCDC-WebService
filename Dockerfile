@@ -1,43 +1,49 @@
-FROM node:24.16.0-alpine3.23
+FROM node:24.19.0-alpine3.23
 
 ENV PORT 8080
 ENV NODE_ENV production
 
-# Upgrade npm to latest version to address CVE-2026-0775 (npm 11.8.0 vulnerability)
-RUN npm install -g npm@latest
+# OS: Alpine OpenSSL 3.5.7-r0 closes CVE-2026-34182 (critical) and related OpenSSL highs
+# (CVE-2026-45445, CVE-2026-9076, CVE-2026-7383, CVE-2026-34180, CVE-2026-42764,
+#  CVE-2026-34183, CVE-2026-45447, CVE-2026-34181). Official node alpine tags can
+# lag the v3.23 package repo, so upgrade OpenSSL at build time.
+RUN apk upgrade --no-cache \
+    && apk add --no-cache --upgrade \
+        'openssl>=3.5.7-r0' \
+        'libcrypto3>=3.5.7-r0' \
+        'libssl3>=3.5.7-r0'
 
-# Update tar to 7.5.11 to fix CVE in npm's bundled tar (7.5.4)
-RUN mkdir -p /tmp/tar-update && \
-    cd /tmp/tar-update && \
-    npm init -y && \
-    npm install tar@7.5.11 --legacy-peer-deps && \
-    rm -rf /usr/local/lib/node_modules/npm/node_modules/tar && \
-    cp -r node_modules/tar /usr/local/lib/node_modules/npm/node_modules/ && \
-    rm -rf /tmp/tar-update
+# Node 24.19.0 includes the June 2026 (v24.17.0) and July 2026 (v24.18.1) security
+# releases: CVE-2026-48930 (critical), CVE-2026-58043, CVE-2026-48615,
+# CVE-2026-48617, CVE-2026-48619, CVE-2026-48937.
 
-# Fix CVE GHSA-7h2j-956f-4vf2: Update @isaacs/brace-expansion from 5.0.0 to 5.0.1 in npm's node_modules
-RUN mkdir -p /tmp/brace-expansion-update && \
-    cd /tmp/brace-expansion-update && \
-    npm init -y && \
-    npm install @isaacs/brace-expansion@5.0.1 --legacy-peer-deps && \
-    rm -rf /usr/local/lib/node_modules/npm/node_modules/@isaacs/brace-expansion && \
-    cp -r node_modules/@isaacs/brace-expansion /usr/local/lib/node_modules/npm/node_modules/@isaacs/ && \
-    rm -rf /tmp/brace-expansion-update
+# Keep npm on the 11.x line that ships with Node 24, then replace bundled copies
+# scanners still flag under npm's node_modules.
+RUN npm install -g npm@11.19.0
 
-# Fix minimatch vulnerability and CVE-2026-25547: keep npm's unscoped brace-expansion outside vulnerable 5.0.0-5.0.6 range
-RUN mkdir -p /tmp/minimatch-update && \
-    cd /tmp/minimatch-update && \
+# tar@7.5.22: CVE-2026-59871, CVE-2026-59873, CVE-2026-59874, CVE-2026-73566
+# brace-expansion@5.0.9: CVE-2026-13149, CVE-2026-14257
+# ip-address@10.5.0: CVE-2026-69192
+RUN mkdir -p /tmp/cve-fix && \
+    cd /tmp/cve-fix && \
     npm init -y && \
-    npm install minimatch@10.2.3 --legacy-peer-deps && \
-    npm install brace-expansion@4.0.1 balanced-match@3.0.1 --legacy-peer-deps --force && \
-    rm -rf node_modules/minimatch/node_modules/brace-expansion && \
-    rm -rf /usr/local/lib/node_modules/npm/node_modules/minimatch && \
-    cp -r node_modules/minimatch /usr/local/lib/node_modules/npm/node_modules/ && \
-    rm -rf /usr/local/lib/node_modules/npm/node_modules/brace-expansion && \
-    cp -r node_modules/brace-expansion /usr/local/lib/node_modules/npm/node_modules/ && \
-    rm -rf /usr/local/lib/node_modules/npm/node_modules/balanced-match && \
-    cp -r node_modules/balanced-match /usr/local/lib/node_modules/npm/node_modules/ && \
-    rm -rf /tmp/minimatch-update
+    npm install tar@7.5.22 brace-expansion@5.0.9 ip-address@10.5.0 minimatch@10.2.6 @isaacs/brace-expansion@5.0.1 --legacy-peer-deps && \
+    NPM_ROOT=/usr/local/lib/node_modules/npm && \
+    rm -rf "$NPM_ROOT/node_modules/tar" && \
+    cp -r node_modules/tar "$NPM_ROOT/node_modules/" && \
+    rm -rf "$NPM_ROOT/node_modules/brace-expansion" && \
+    cp -r node_modules/brace-expansion "$NPM_ROOT/node_modules/" && \
+    rm -rf "$NPM_ROOT/node_modules/ip-address" && \
+    cp -r node_modules/ip-address "$NPM_ROOT/node_modules/" && \
+    rm -rf "$NPM_ROOT/node_modules/minimatch" && \
+    cp -r node_modules/minimatch "$NPM_ROOT/node_modules/" && \
+    mkdir -p "$NPM_ROOT/node_modules/@isaacs" && \
+    rm -rf "$NPM_ROOT/node_modules/@isaacs/brace-expansion" && \
+    cp -r node_modules/@isaacs/brace-expansion "$NPM_ROOT/node_modules/@isaacs/" && \
+    find "$NPM_ROOT/node_modules" -type d -path '*/node_modules/tar' ! -path "$NPM_ROOT/node_modules/tar" -exec rm -rf {} + 2>/dev/null || true && \
+    find "$NPM_ROOT/node_modules" -type d -path '*/node_modules/brace-expansion' ! -path "$NPM_ROOT/node_modules/brace-expansion" ! -path '*/@isaacs/*' -exec rm -rf {} + 2>/dev/null || true && \
+    find "$NPM_ROOT/node_modules" -type d -path '*/node_modules/ip-address' ! -path "$NPM_ROOT/node_modules/ip-address" -exec rm -rf {} + 2>/dev/null || true && \
+    rm -rf /tmp/cve-fix
 
 WORKDIR /usr/src/app
 
