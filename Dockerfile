@@ -1,56 +1,4 @@
-FROM node:24.19.0-alpine3.23
-
-ENV PORT 8080
-ENV NODE_ENV production
-
-# OS: Alpine OpenSSL 3.5.7-r0 closes CVE-2026-34182 (critical) and related OpenSSL highs
-# (CVE-2026-45445, CVE-2026-9076, CVE-2026-7383, CVE-2026-34180, CVE-2026-42764,
-#  CVE-2026-34183, CVE-2026-45447, CVE-2026-34181). Official node alpine tags can
-# lag the v3.23 package repo, so upgrade OpenSSL at build time.
-RUN apk upgrade --no-cache \
-    && apk add --no-cache --upgrade \
-        'openssl>=3.5.7-r0' \
-        'libcrypto3>=3.5.7-r0' \
-        'libssl3>=3.5.7-r0'
-
-# Node 24.19.0 includes the June 2026 (v24.17.0) and July 2026 (v24.18.1) security
-# releases: CVE-2026-48930 (critical), CVE-2026-58043, CVE-2026-48615,
-# CVE-2026-48617, CVE-2026-48619, CVE-2026-48937.
-
-# Drop Node's bundled OpenSSL headers. Scanners match openssl/openssl CVEs from
-# opensslv.h under /usr/local/include/node/openssl/archs/...; those headers are
-# only used to compile native addons (node-gyp). This image runs node app.js
-# and does not compile addons at runtime. Node still uses its linked OpenSSL
-# via process.versions.openssl.
-RUN rm -rf /usr/local/include/node/openssl
-
-# Keep npm on the 11.x line that ships with Node 24, then replace bundled copies
-# scanners still flag under npm's node_modules.
-RUN npm install -g npm@11.19.0
-
-# tar@7.5.22: CVE-2026-59871, CVE-2026-59873, CVE-2026-59874, CVE-2026-73566
-# brace-expansion@5.0.9: CVE-2026-13149, CVE-2026-14257
-# ip-address@10.5.0: CVE-2026-69192
-RUN mkdir -p /tmp/cve-fix && \
-    cd /tmp/cve-fix && \
-    npm init -y && \
-    npm install tar@7.5.22 brace-expansion@5.0.9 ip-address@10.5.0 minimatch@10.2.6 @isaacs/brace-expansion@5.0.1 --legacy-peer-deps && \
-    NPM_ROOT=/usr/local/lib/node_modules/npm && \
-    rm -rf "$NPM_ROOT/node_modules/tar" && \
-    cp -r node_modules/tar "$NPM_ROOT/node_modules/" && \
-    rm -rf "$NPM_ROOT/node_modules/brace-expansion" && \
-    cp -r node_modules/brace-expansion "$NPM_ROOT/node_modules/" && \
-    rm -rf "$NPM_ROOT/node_modules/ip-address" && \
-    cp -r node_modules/ip-address "$NPM_ROOT/node_modules/" && \
-    rm -rf "$NPM_ROOT/node_modules/minimatch" && \
-    cp -r node_modules/minimatch "$NPM_ROOT/node_modules/" && \
-    mkdir -p "$NPM_ROOT/node_modules/@isaacs" && \
-    rm -rf "$NPM_ROOT/node_modules/@isaacs/brace-expansion" && \
-    cp -r node_modules/@isaacs/brace-expansion "$NPM_ROOT/node_modules/@isaacs/" && \
-    find "$NPM_ROOT/node_modules" -type d -path '*/node_modules/tar' ! -path "$NPM_ROOT/node_modules/tar" -exec rm -rf {} + 2>/dev/null || true && \
-    find "$NPM_ROOT/node_modules" -type d -path '*/node_modules/brace-expansion' ! -path "$NPM_ROOT/node_modules/brace-expansion" ! -path '*/@isaacs/*' -exec rm -rf {} + 2>/dev/null || true && \
-    find "$NPM_ROOT/node_modules" -type d -path '*/node_modules/ip-address' ! -path "$NPM_ROOT/node_modules/ip-address" -exec rm -rf {} + 2>/dev/null || true && \
-    rm -rf /tmp/cve-fix
+FROM node:24.19.0-alpine3.23 AS dependencies
 
 WORKDIR /usr/src/app
 
@@ -58,11 +6,42 @@ COPY package*.json ./
 
 RUN npm ci --omit=dev
 
-COPY  --chown=node:node . .
+FROM node:24.19.0-alpine3.23 AS runtime
 
-# Run as non-root user for security
+ENV PORT=8080
+ENV NODE_ENV=production
+
+# Upgrade the runtime packages from the same Alpine release channel.
+RUN apk upgrade --no-cache \
+    && apk add --no-cache --upgrade \
+        'openssl>=3.5.7-r0' \
+        'libcrypto3>=3.5.7-r0' \
+        'libssl3>=3.5.7-r0'
+
+# The service starts with node directly. npm, npx, and Node's bundled OpenSSL
+# headers are build-time tooling and are not needed in the runtime image.
+RUN rm -rf \
+    /usr/local/include/node/openssl \
+    /usr/local/lib/node_modules/npm \
+    /usr/local/bin/npm \
+    /usr/local/bin/npx
+
+WORKDIR /usr/src/app
+
+COPY --from=dependencies --chown=node:node /usr/src/app/node_modules ./node_modules
+COPY --chown=node:node package.json app.js ./
+COPY --chown=node:node Components ./Components
+COPY --chown=node:node Config ./Config
+COPY --chown=node:node Controllers ./Controllers
+COPY --chown=node:node Middleware ./Middleware
+COPY --chown=node:node Models ./Models
+COPY --chown=node:node Public ./Public
+COPY --chown=node:node Routes ./Routes
+COPY --chown=node:node Services ./Services
+COPY --chown=node:node Utils ./Utils
+
 USER node
 
 EXPOSE 8080 9200 3306
 
-CMD [ "node", "app.js" ]
+CMD ["node", "app.js"]
