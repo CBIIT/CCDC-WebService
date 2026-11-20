@@ -90,7 +90,7 @@ const getGlossaryTermsByFirstLetter = async (firstLetter) => {
   let terms = {};
   let sql = '';
 
-  if (!firstLetter || firstLetter.length > 1) {
+  if (typeof firstLetter !== 'string' || firstLetter.length !== 1) {
     throw new Error('Argument should be exactly one character long.');
   }
 
@@ -101,9 +101,10 @@ const getGlossaryTermsByFirstLetter = async (firstLetter) => {
       \`definition\`,
       \`reference\`
     FROM glossary
-    WHERE term_name LIKE '${firstLetter}%'
+    WHERE term_name LIKE ?
     ORDER BY term_name;`;
-  termList = await mysql.query(sql);
+  sql = mysql.format(sql, [`${firstLetter}%`]);
+  const termList = await mysql.query(sql);
   terms[firstLetter] = termList;
   return terms;
 };
